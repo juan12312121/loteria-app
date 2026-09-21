@@ -1,7 +1,7 @@
 import { Image, StyleSheet, Text, View } from 'react-native';
 import { SvgXml } from 'react-native-svg';
-import { aparienciaCarta, aparienciaFicha, svgDeCarta, type Carta as TipoCarta } from '@loteria/core';
-import { colores, fuentes } from '../../tema';
+import { aparienciaCarta, svgDeCarta, svgDeFicha, type Carta as TipoCarta } from '@loteria/core';
+import { fuentes } from '../../tema';
 
 export type TamanoCarta = 'mini' | 'chica' | 'mediana' | 'grande';
 
@@ -47,12 +47,11 @@ export function Carta({ carta, tamano = 'chica', apagada = false, skin }: Props)
   );
 }
 
-/** Ficha (frijolito) con la skin del jugador. */
-export function Ficha({ skin, tamano = 26 }: { skin?: string | null; tamano?: number }) {
-  const a = aparienciaFicha(skin);
+/** Ficha (frijolito) con la skin del jugador, dibujada en SVG. */
+export function Ficha({ skin, tamano = 30 }: { skin?: string | null; tamano?: number }) {
   return (
-    <View style={[estilos.ficha, { width: tamano, height: tamano, borderRadius: tamano / 2, backgroundColor: a.fondo, borderColor: a.borde }]}>
-      {a.simbolo ? <Text style={{ color: colores.blanco, fontSize: tamano * 0.45, fontFamily: fuentes.cuerpoNegra }}>{a.simbolo}</Text> : null}
+    <View style={[estilos.ficha, { width: tamano, height: tamano }]} pointerEvents="none">
+      <SvgXml xml={svgDeFicha(skin)} width="100%" height="100%" />
     </View>
   );
 }
@@ -65,5 +64,5 @@ const estilos = StyleSheet.create({
   dibujo: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 2 },
   imagen: { width: '100%', height: '100%' },
   nombre: { fontFamily: fuentes.titulo, textAlign: 'center', borderTopWidth: 1, paddingHorizontal: 1 },
-  ficha: { alignItems: 'center', justifyContent: 'center', borderWidth: 3, elevation: 3, shadowColor: '#000', shadowOpacity: 0.3, shadowOffset: { width: 0, height: 2 }, shadowRadius: 0 },
+  ficha: { shadowColor: '#000', shadowOpacity: 0.3, shadowOffset: { width: 0, height: 2 }, shadowRadius: 0 },
 });

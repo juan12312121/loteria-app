@@ -69,20 +69,15 @@
   position: absolute;
   inset: 0;
   margin: auto;
-  width: 58%;
+  width: 64%;
   aspect-ratio: 1;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  border: 3px solid;
-  color: var(--blanco);
-  font-weight: 900;
-  box-shadow: 0 3px 0 rgb(0 0 0 / 0.3), inset 0 -4px 0 rgb(0 0 0 / 0.15);
+  filter: drop-shadow(0 3px 0 rgb(0 0 0 / 0.3));
   animation: caer 0.18s ease-out;
   pointer-events: none;
 }
+/* Solo escala (sin opacidad) para que la ficha siempre se vea aunque la animación no corra */
 @keyframes caer {
-  from { transform: scale(1.4); opacity: 0; }
+  from { transform: scale(1.35); }
 }
 
 /* ---------- Tabla ---------- */

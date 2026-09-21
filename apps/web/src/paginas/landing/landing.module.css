@@ -482,8 +482,8 @@
   border: 2px solid var(--tinta);
   border-radius: 12px;
 }
-.vitrinaFicha > span {
-  width: 64% !important;
+.vitrinaFicha > img {
+  width: 70% !important;
 }
 
 /* Cierre */

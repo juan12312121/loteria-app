@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import { aparienciaCarta, aparienciaFicha, dataUriDeCarta, type Carta as TipoCarta } from '@loteria/core';
+import { aparienciaCarta, dataUriDeCarta, dataUriDeFicha, type Carta as TipoCarta } from '@loteria/core';
 import s from './juego.module.css';
 
 export type TamanoCarta = 'mini' | 'chica' | 'mediana' | 'grande';
@@ -30,12 +30,7 @@ export function Carta({ carta, tamano = 'chica', apagada = false, skin }: Props)
   );
 }
 
-/** Ficha (frijolito) con la skin del jugador. */
+/** Ficha (frijolito) con la skin del jugador, dibujada en SVG. */
 export function Ficha({ skin }: { skin?: string | null }) {
-  const a = aparienciaFicha(skin);
-  return (
-    <span className={s.ficha} style={{ background: a.fondo, borderColor: a.borde }} aria-hidden>
-      {a.simbolo}
-    </span>
-  );
+  return <img className={s.ficha} src={dataUriDeFicha(skin)} alt="" aria-hidden draggable={false} />;
 }

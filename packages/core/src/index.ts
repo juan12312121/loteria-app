@@ -13,4 +13,5 @@ export { useTienda, usePerfilJuego } from './hooks/useTienda';
 export { useCartas } from './hooks/useCartas';
 export * from './juego/tabla';
 export { svgDeCarta, dataUriDeCarta } from './juego/arte';
-export { aparienciaCarta, aparienciaFicha, type AparienciaCarta, type AparienciaFicha } from './juego/apariencias';
+export { svgDeFicha, dataUriDeFicha } from './juego/fichas';
+export { aparienciaCarta, type AparienciaCarta } from './juego/apariencias';
