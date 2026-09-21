@@ -7,7 +7,6 @@ import { Carta } from '../../componentes/juego/Carta';
 import { UnirseConCodigo } from './UnirseConCodigo';
 import { FormCrearSala } from './FormCrearSala';
 import { ListaSalas } from './ListaSalas';
-import { PanelProgreso } from './PanelProgreso';
 import s from '../paginas.module.css';
 
 const ABANICO = [
@@ -49,8 +48,6 @@ export function PaginaLobby() {
           ))}
         </div>
       </section>
-
-      <PanelProgreso />
 
       <div className={s.dosColumnas} style={{ marginBottom: 16 }}>
         <Tarjeta titulo="Unirse con código" icono={<Users size={16} />}>

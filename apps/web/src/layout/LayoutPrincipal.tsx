@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Coins, LogOut, Moon, Settings, Star, Volume2, WifiOff } from 'lucide-react';
-import { useConexion, useSesion } from '@loteria/core';
+import { useConexion, useProgreso, useSesion } from '@loteria/core';
 import { Avatar, Chip, Interruptor, PapelPicado } from '../componentes/ui/basicos';
 import { cambiarPreferencia, usePreferencias } from '../preferencias';
 import s from './layout.module.css';
 
 const enlaces = [
   { a: '/jugar', texto: 'Jugar' },
+  { a: '/misiones', texto: 'Misiones' },
   { a: '/tienda', texto: 'Tienda' },
   { a: '/ranking', texto: 'Ranking' },
   { a: '/perfil', texto: 'Perfil' },
@@ -19,6 +20,7 @@ export function LayoutPrincipal() {
   const navegar = useNavigate();
   const conexion = useConexion();
   const { tema } = usePreferencias();
+  const porCobrar = usePorCobrar(perfil?.puntos);
 
   // El modo noche solo aplica dentro del juego (la landing se queda clara)
   useEffect(() => {
@@ -45,6 +47,11 @@ export function LayoutPrincipal() {
             {enlaces.map((e) => (
               <NavLink key={e.a} to={e.a} end className={({ isActive }) => `${s.enlace} ${isActive ? s.activo : ''}`}>
                 {e.texto}
+                {e.a === '/misiones' && porCobrar > 0 && (
+                  <span className={s.globito} aria-label={`${porCobrar} por cobrar`}>
+                    {porCobrar}
+                  </span>
+                )}
               </NavLink>
             ))}
           </nav>
@@ -75,6 +82,19 @@ export function LayoutPrincipal() {
       </main>
     </>
   );
+}
+
+/**
+ * Cuántas cosas hay por cobrar (recompensa de hoy + misiones listas). Se revisa
+ * al cambiar de página y cuando cambian los puntos (al cobrar o al terminar una ronda).
+ */
+function usePorCobrar(puntos: number | undefined) {
+  const { porCobrar, recargar } = useProgreso();
+  const { pathname } = useLocation();
+  useEffect(() => {
+    void recargar();
+  }, [pathname, puntos, recargar]);
+  return porCobrar;
 }
 
 /** Sonido y modo noche (se guardan en este navegador). */

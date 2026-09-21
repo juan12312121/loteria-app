@@ -33,6 +33,20 @@
   font-weight: 800;
   color: var(--anil);
 }
+.globito {
+  display: inline-grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  margin-left: 6px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--rosa);
+  color: var(--blanco);
+  font-size: 0.75rem;
+  font-weight: 900;
+  vertical-align: 2px;
+}
 .enlace:hover {
   background: var(--crema);
 }
