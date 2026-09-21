@@ -183,7 +183,7 @@ export function PaginaLanding() {
 
       <footer className={s.pie}>
         <span className={s.logo}>¡Lotería!</span>
-        <span>Hecho con cariño para jugar en familia · Las ilustraciones son provisionales</span>
+        <span>Hecho con cariño para jugar en familia · Ilustraciones originales</span>
       </footer>
     </div>
   );

@@ -1,5 +1,6 @@
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { ilustracionDe, MAX_TABLAS_POR_JUGADOR, useSesion, type Tabla } from '@loteria/core';
+import { SvgXml } from 'react-native-svg';
+import { MAX_TABLAS_POR_JUGADOR, svgDeCarta, useSesion, type Tabla } from '@loteria/core';
 import { Chip, Tarjeta } from '../../componentes/ui/basicos';
 import { Boton } from '../../componentes/ui/Boton';
 import { MiniFigura } from '../../componentes/juego/Cantor';
@@ -70,7 +71,13 @@ export function VistaEspera({ sala, ronda }: ContextoSala) {
                 style={[estilos.opcion, mia && estilos.mia, deshabilitada && !mia && { opacity: 0.45 }]}
               >
                 <Text style={comunes.negrita}>{mia ? `✓ ${t.nombre}` : t.nombre}</Text>
-                <Text style={{ fontSize: 13, lineHeight: 18 }}>{t.cartas.map(ilustracionDe).join(' ')}</Text>
+                <View style={estilos.mini}>
+                  {t.cartas.map((c) => (
+                    <View key={c} style={estilos.miniCasilla}>
+                      <SvgXml xml={svgDeCarta(c)} width="100%" height="100%" />
+                    </View>
+                  ))}
+                </View>
                 {deOtro && <Text style={comunes.textoSuave}>de {deOtro.nombre}</Text>}
               </Pressable>
             );
@@ -101,4 +108,6 @@ const estilos = StyleSheet.create({
   rejilla: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   opcion: { width: '48%', gap: 4, padding: 8, borderWidth: 2, borderColor: colores.tinta, borderRadius: radio.m, backgroundColor: colores.blanco },
   mia: { borderColor: colores.rosa, borderWidth: 3 },
+  mini: { flexDirection: 'row', flexWrap: 'wrap', gap: 2 },
+  miniCasilla: { width: '23%', aspectRatio: 1, borderWidth: 1, borderColor: colores.tinta, borderRadius: 2, overflow: 'hidden' },
 });

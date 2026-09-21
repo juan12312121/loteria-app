@@ -12,5 +12,5 @@ export { usePartida, type AvisoRonda, type RondaEnVivo } from './hooks/usePartid
 export { useTienda, usePerfilJuego } from './hooks/useTienda';
 export { useCartas } from './hooks/useCartas';
 export * from './juego/tabla';
-export { ilustracionDe } from './juego/ilustraciones';
+export { svgDeCarta, dataUriDeCarta } from './juego/arte';
 export { aparienciaCarta, aparienciaFicha, type AparienciaCarta, type AparienciaFicha } from './juego/apariencias';

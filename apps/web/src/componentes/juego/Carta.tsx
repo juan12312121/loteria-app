@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import { aparienciaCarta, aparienciaFicha, ilustracionDe, type Carta as TipoCarta } from '@loteria/core';
+import { aparienciaCarta, aparienciaFicha, dataUriDeCarta, type Carta as TipoCarta } from '@loteria/core';
 import s from './juego.module.css';
 
 export type TamanoCarta = 'mini' | 'chica' | 'mediana' | 'grande';
@@ -22,7 +22,7 @@ export function Carta({ carta, tamano = 'chica', apagada = false, skin }: Props)
       <div className={s.cartaInterior}>
         <span className={s.cartaNumero}>{carta.id}</span>
         <span className={s.cartaDibujo}>
-          {carta.imagen_url ? <img src={carta.imagen_url} alt="" /> : <span aria-hidden>{ilustracionDe(carta.id)}</span>}
+          <img src={carta.imagen_url ?? dataUriDeCarta(carta.id)} alt="" draggable={false} />
         </span>
         <span className={s.cartaNombre}>{carta.nombre}</span>
       </div>

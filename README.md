@@ -32,7 +32,7 @@ El backend es `loteria-backend` (Express + Supabase + Socket.IO).
 | `contexto/` | `LoteriaProvider` (servicios + sesión), `useServicios()`, `useSesion()` |
 | `hooks/genericos.ts` | `useConsulta` (datos sin carreras), `useAccion` (carga/error de una operación), `useCola` (toasts), `useEventoSala` |
 | `hooks/` | `useLobby`, `useSala`, `usePartida` (la ronda en vivo), `useTienda`, `usePerfilJuego`, `useCartas` |
-| `juego/` | coordenadas de casillas, marcas, figuras (mismas máscaras que el servidor), apariencia de skins, ilustraciones provisionales |
+| `juego/` | coordenadas de casillas, marcas, figuras (mismas máscaras que el servidor), apariencia de skins y las 54 ilustraciones originales en SVG (`arte.ts`) |
 | `tema.ts` | tokens de diseño "Lotería Tradicional": web los publica como variables CSS, móvil los usa en `StyleSheet` |
 | `almacen.ts` | interfaz para guardar la sesión; cada plataforma trae la suya (localStorage / SecureStore) |
 
@@ -48,4 +48,4 @@ Misma estructura y mismos nombres de componentes en las dos:
 - El jugador marca solo casillas cuya carta ya salió; la validación real la hace el servidor por coordenadas.
 - Se gana con tabla llena. Cuatro esquinas y La O llegan como avisos y se resaltan en amarillo en la tabla.
 - Con varias tablas, "¡Lotería!" grita con la tabla seleccionada (o la que lleva más marcas).
-- Las ilustraciones de las cartas son provisionales; si la carta trae `imagen_url`, se usa la imagen.
+- Las 54 cartas se dibujan en SVG (`packages/core/src/juego/arte.ts`); web las usa como imagen y móvil con `react-native-svg`. Si una carta trae `imagen_url`, se usa esa imagen.

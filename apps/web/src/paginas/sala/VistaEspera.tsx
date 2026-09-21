@@ -1,5 +1,5 @@
 import { Check } from 'lucide-react';
-import { ilustracionDe, MAX_TABLAS_POR_JUGADOR, useSesion, type Tabla } from '@loteria/core';
+import { dataUriDeCarta, MAX_TABLAS_POR_JUGADOR, useSesion, type Tabla } from '@loteria/core';
 import { Chip, Tarjeta } from '../../componentes/ui/basicos';
 import { Boton } from '../../componentes/ui/Boton';
 import { MiniFigura } from '../../componentes/juego/Cantor';
@@ -83,7 +83,7 @@ export function VistaEspera({ sala, ronda }: ContextoSala) {
                 </div>
                 <div className={s.miniRejilla} aria-hidden>
                   {t.cartas.map((c) => (
-                    <span key={c}>{ilustracionDe(c)}</span>
+                    <img key={c} src={dataUriDeCarta(c)} alt="" loading="lazy" />
                   ))}
                 </div>
                 {deOtro && <div className="texto-suave">de {deOtro.nombre}</div>}

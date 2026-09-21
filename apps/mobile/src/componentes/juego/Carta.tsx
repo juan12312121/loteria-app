@@ -1,14 +1,15 @@
 import { Image, StyleSheet, Text, View } from 'react-native';
-import { aparienciaCarta, aparienciaFicha, ilustracionDe, type Carta as TipoCarta } from '@loteria/core';
+import { SvgXml } from 'react-native-svg';
+import { aparienciaCarta, aparienciaFicha, svgDeCarta, type Carta as TipoCarta } from '@loteria/core';
 import { colores, fuentes } from '../../tema';
 
 export type TamanoCarta = 'mini' | 'chica' | 'mediana' | 'grande';
 
-const MEDIDAS: Record<TamanoCarta, { numero: number; dibujo: number; nombre: number; relleno: number; borde: number }> = {
-  mini: { numero: 8, dibujo: 14, nombre: 0, relleno: 1, borde: 1 },
-  chica: { numero: 9, dibujo: 22, nombre: 7, relleno: 2, borde: 1.5 },
-  mediana: { numero: 11, dibujo: 34, nombre: 9, relleno: 3, borde: 2 },
-  grande: { numero: 22, dibujo: 88, nombre: 18, relleno: 6, borde: 3 },
+const MEDIDAS: Record<TamanoCarta, { numero: number; nombre: number; relleno: number; borde: number }> = {
+  mini: { numero: 8, nombre: 0, relleno: 1, borde: 1 },
+  chica: { numero: 9, nombre: 7, relleno: 2, borde: 1.5 },
+  mediana: { numero: 11, nombre: 9, relleno: 3, borde: 2 },
+  grande: { numero: 22, nombre: 18, relleno: 6, borde: 3 },
 };
 
 interface Props {
@@ -33,7 +34,7 @@ export function Carta({ carta, tamano = 'chica', apagada = false, skin }: Props)
           {carta.imagen_url ? (
             <Image source={{ uri: carta.imagen_url }} style={estilos.imagen} resizeMode="contain" />
           ) : (
-            <Text style={{ fontSize: m.dibujo }}>{ilustracionDe(carta.id)}</Text>
+            <SvgXml xml={svgDeCarta(carta.id)} width="100%" height="100%" />
           )}
         </View>
         {m.nombre > 0 && (
@@ -61,7 +62,7 @@ const estilos = StyleSheet.create({
   apagada: { opacity: 0.3 },
   interior: { flex: 1, borderWidth: 1, borderRadius: 3 },
   numero: { fontFamily: fuentes.cuerpoNegra, paddingHorizontal: 2, lineHeight: undefined },
-  dibujo: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  dibujo: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 2 },
   imagen: { width: '100%', height: '100%' },
   nombre: { fontFamily: fuentes.titulo, textAlign: 'center', borderTopWidth: 1, paddingHorizontal: 1 },
   ficha: { alignItems: 'center', justifyContent: 'center', borderWidth: 3, elevation: 3, shadowColor: '#000', shadowOpacity: 0.3, shadowOffset: { width: 0, height: 2 }, shadowRadius: 0 },
