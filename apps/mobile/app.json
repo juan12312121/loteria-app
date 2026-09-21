@@ -1,0 +1,35 @@
+{
+  "expo": {
+    "name": "Lotería",
+    "slug": "loteria",
+    "scheme": "loteria",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "backgroundColor": "#FFF6E5",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "mx.loteria.app"
+    },
+    "android": {
+      "package": "mx.loteria.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#E4007C",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      "expo-font"
+    ]
+  }
+}
