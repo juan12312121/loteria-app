@@ -1,9 +1,10 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { CASILLAS, indicesDeCasillas, useSesion, type Casilla, type Ganador } from '@loteria/core';
-import { Chip, Tarjeta } from '../../componentes/ui/basicos';
+import { Avatar, Chip, Tarjeta } from '../../componentes/ui/basicos';
 import { Boton } from '../../componentes/ui/Boton';
 import { TablaLoteria } from '../../componentes/juego/TablaLoteria';
+import { Confeti } from '../../componentes/ui/Confeti';
 import { colores, comunes, fuentes } from '../../tema';
 import type { ContextoSala } from './tipos';
 
@@ -24,8 +25,11 @@ export function VistaResultado({ sala, ronda, porId }: ContextoSala) {
   const nombres = ganadores.map((g) => (g.usuario_id === perfil?.id ? 'Tú' : g.nombre)).join(' y ');
   const carta = ronda.resultado?.carta ?? estado?.partida.indice;
   const puntos = destacado?.puntos;
+  const enVivo = !!ronda.resultado && ganadores.length > 0;
+  const avatarDe = (usuarioId: string) => estado?.tablasOcupadas.find((t) => t.usuario_id === usuarioId)?.avatar ?? null;
 
   return (
+    <View style={{ flex: 1 }}>
     <ScrollView contentContainerStyle={comunes.contenido}>
       <Text style={estilos.titulo}>{ganadores.length ? '¡LOTERÍA!' : 'Se acabó el mazo'}</Text>
       <Text style={[comunes.negrita, { textAlign: 'center', fontSize: 16 }]}>
@@ -46,7 +50,10 @@ export function VistaResultado({ sala, ronda, porId }: ContextoSala) {
       {ganadores.map((g) => (
         <Tarjeta key={g.usuario_id} titulo="Premio del pozo">
           <View style={[comunes.fila, { justifyContent: 'space-between' }]}>
-            <Text style={comunes.negrita}>{g.nombre}</Text>
+            <View style={[comunes.fila, { flexWrap: 'nowrap' }]}>
+              <Avatar nombre={g.nombre} clave={avatarDe(g.usuario_id)} />
+              <Text style={comunes.negrita}>{g.nombre}</Text>
+            </View>
             <Chip tono="amarillo">{`+${g.premio} fichas`}</Chip>
           </View>
         </Tarjeta>
@@ -91,6 +98,8 @@ export function VistaResultado({ sala, ronda, porId }: ContextoSala) {
         Volver al lobby
       </Boton>
     </ScrollView>
+    {enVivo && <Confeti />}
+    </View>
   );
 }
 

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Check, Copy, Crown, MessageCircle } from 'lucide-react';
+import { Bot, Check, Copy, Crown, MessageCircle, X } from 'lucide-react';
 import type { JugadorSala } from '@loteria/core';
 import { Avatar, Chip } from '../ui/basicos';
 import { Boton } from '../ui/Boton';
@@ -44,15 +44,17 @@ interface ListaProps {
   jugadores: JugadorSala[];
   /** Texto extra por jugador (p. ej. "3 tablas") */
   detalle?: (j: JugadorSala) => string | undefined;
+  /** Solo el anfitrión, fuera de ronda: quitar un bot */
+  alQuitarBot?: (botId: string) => void;
 }
 
-/** Jugadores de la sala con su estado de conexión. */
-export function ListaJugadores({ jugadores, detalle }: ListaProps) {
+/** Jugadores de la sala con su avatar y estado de conexión. */
+export function ListaJugadores({ jugadores, detalle, alQuitarBot }: ListaProps) {
   return (
     <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
       {jugadores.map((j) => (
         <li key={j.id} className={s.jugador}>
-          <Avatar nombre={j.nombre} conectado={j.conectado} />
+          <Avatar nombre={j.nombre} clave={j.avatar} conectado={j.conectado} />
           <span className={s.jugadorNombre}>
             {j.nombre}
             {detalle?.(j) && <span className={s.jugadorDetalle}> · {detalle(j)}</span>}
@@ -61,6 +63,14 @@ export function ListaJugadores({ jugadores, detalle }: ListaProps) {
             <Chip tono="amarillo" icono={<Crown size={14} />}>
               Anfitrión
             </Chip>
+          )}
+          {j.bot && (
+            <Chip icono={<Bot size={14} />}>Bot</Chip>
+          )}
+          {j.bot && alQuitarBot && (
+            <button type="button" className={s.quitar} onClick={() => alQuitarBot(j.id)} aria-label={`Quitar a ${j.nombre}`} title="Quitar bot">
+              <X size={16} />
+            </button>
           )}
         </li>
       ))}

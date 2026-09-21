@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useServicios, useSesion } from '../contexto/LoteriaProvider';
 import { useAccion, useConsulta, useEventoSala } from './genericos';
+import { useAlReconectar } from './useConexion';
 
 /**
  * Todo lo de una sala: datos, jugadores en vivo y la ronda actual.
@@ -34,6 +35,12 @@ export function useSala(salaId: string) {
     if (p.sala_id === salaId) partida.fijar(() => p);
   });
 
+  // Si se cayó el internet, al volver se recupera quién está y en qué va la ronda
+  useAlReconectar(() => {
+    void recargarJugadores();
+    void partida.recargar();
+  });
+
   const nuevaRonda = useAccion(async () => {
     const p = await api.partidas.crear(salaId);
     partida.fijar(() => p);
@@ -41,6 +48,16 @@ export function useSala(salaId: string) {
   });
 
   const salir = useAccion(() => api.salas.salir(salaId));
+
+  const agregarBot = useAccion(async () => {
+    await api.salas.agregarBot(salaId);
+    await recargarJugadores();
+  });
+
+  const quitarBot = useAccion(async (botId: string) => {
+    await api.salas.quitarBot(salaId, botId);
+    await recargarJugadores();
+  });
 
   const esAnfitrion = !!sala.data && sala.data.anfitrion_id === perfil?.id;
   const figuraFinal = catalogo.data?.figuras.find((f) => f.id === sala.data?.figura_id) ?? null;
@@ -58,5 +75,6 @@ export function useSala(salaId: string) {
     error: sala.error ?? partida.error,
     nuevaRonda,
     salir,
+    bots: { agregar: agregarBot, quitar: quitarBot },
   };
 }

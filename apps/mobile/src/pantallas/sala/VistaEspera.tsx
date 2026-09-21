@@ -85,8 +85,27 @@ export function VistaEspera({ sala, ronda }: ContextoSala) {
         </View>
       </Tarjeta>
 
-      <Tarjeta titulo={`Jugadores (${sala.jugadores.length})`}>
-        <ListaJugadores jugadores={sala.jugadores} detalle={(j) => `${ocupadas.filter((o) => o.usuario_id === j.id).length} tabla(s)`} />
+      <Tarjeta titulo={`Jugadores (${sala.jugadores.length}/${datosSala.max_jugadores})`}>
+        <ListaJugadores
+          jugadores={sala.jugadores}
+          detalle={(j) => `${ocupadas.filter((o) => o.usuario_id === j.id).length} tabla(s)`}
+          alQuitarBot={sala.esAnfitrion ? (id) => void sala.bots.quitar.ejecutar(id) : undefined}
+        />
+        {sala.esAnfitrion && (
+          <View style={{ marginTop: 8, gap: 4 }}>
+            <Boton
+              tamano="s"
+              variante="secundario"
+              cargando={sala.bots.agregar.cargando}
+              deshabilitado={sala.jugadores.length >= datosSala.max_jugadores}
+              alPresionar={() => sala.bots.agregar.ejecutar()}
+            >
+              🤖 Agregar bot
+            </Boton>
+            <Text style={comunes.textoSuave}>¿Faltan jugadores? Los bots eligen tablas y el tablero los revisa igual.</Text>
+            {(sala.bots.agregar.error || sala.bots.quitar.error) && <Text style={comunes.error}>{sala.bots.agregar.error ?? sala.bots.quitar.error}</Text>}
+          </View>
+        )}
       </Tarjeta>
 
       {sala.esAnfitrion ? (

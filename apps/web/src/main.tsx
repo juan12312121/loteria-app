@@ -4,7 +4,7 @@ import { App } from './App';
 import { aplicarTema } from './plataforma';
 import './estilos/global.css';
 
-aplicarTema(document.documentElement);
+aplicarTema(document);
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

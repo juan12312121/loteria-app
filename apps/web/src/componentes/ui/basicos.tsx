@@ -1,5 +1,5 @@
 import type { InputHTMLAttributes, ReactNode, SelectHTMLAttributes } from 'react';
-import { papelPicado } from '@loteria/core';
+import { dataUriDeAvatar, papelPicado } from '@loteria/core';
 import s from './ui.module.css';
 
 // ---------- Chip ----------
@@ -83,13 +83,51 @@ export function Selector({ etiqueta, opciones, id, ...resto }: SelectorProps) {
 // ---------- Avatar ----------
 const colorDe = (texto: string) => papelPicado[[...texto].reduce((a, c) => a + c.charCodeAt(0), 0) % papelPicado.length];
 
-export function Avatar({ nombre, tamano = 36, conectado }: { nombre: string; tamano?: number; conectado?: boolean }) {
+interface AvatarProps {
+  nombre: string;
+  /** Clave de la skin de avatar; sin ella se usa la inicial en un círculo de color */
+  clave?: string | null;
+  tamano?: number;
+  conectado?: boolean;
+}
+
+export function Avatar({ nombre, clave, tamano = 36, conectado }: AvatarProps) {
+  const punto = conectado !== undefined && (
+    <span className={s.punto} style={{ background: conectado ? 'var(--verde)' : 'var(--gris)' }} />
+  );
+  if (clave)
+    return (
+      <span className={s.avatarDibujo} style={{ width: tamano, height: tamano }} aria-hidden>
+        <img src={dataUriDeAvatar(clave)} alt="" draggable={false} />
+        {punto}
+      </span>
+    );
   return (
     <span className={s.avatar} style={{ width: tamano, height: tamano, background: colorDe(nombre), fontSize: tamano * 0.42 }} aria-hidden>
       {nombre.trim().charAt(0).toUpperCase()}
-      {conectado !== undefined && (
-        <span className={s.punto} style={{ background: conectado ? 'var(--verde)' : 'var(--gris)' }} />
-      )}
+      {punto}
+    </span>
+  );
+}
+
+// ---------- Interruptor ----------
+export function Interruptor({ etiqueta, activo, alCambiar }: { etiqueta: ReactNode; activo: boolean; alCambiar: (v: boolean) => void }) {
+  return (
+    <button type="button" role="switch" aria-checked={activo} className={s.interruptor} onClick={() => alCambiar(!activo)}>
+      <span className={`${s.riel} ${activo ? s.rielActivo : ''}`}>
+        <span className={s.perilla} />
+      </span>
+      {etiqueta}
+    </button>
+  );
+}
+
+// ---------- Barra de avance ----------
+export function Avance({ valor, total, tono = 'rosa' }: { valor: number; total: number; tono?: 'rosa' | 'verde' | 'amarillo' }) {
+  const pct = total ? Math.min(100, Math.round((valor / total) * 100)) : 0;
+  return (
+    <span className={s.avance} role="progressbar" aria-valuenow={valor} aria-valuemin={0} aria-valuemax={total}>
+      <span className={s.avanceRelleno} style={{ width: `${pct}%`, background: `var(--${tono})` }} />
     </span>
   );
 }

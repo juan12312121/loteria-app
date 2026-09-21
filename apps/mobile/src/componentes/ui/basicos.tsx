@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View, type TextInputProps } from 'react-native';
-import { papelPicado } from '@loteria/core';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Switch, Text, TextInput, View, type TextInputProps } from 'react-native';
+import { SvgXml } from 'react-native-svg';
+import { papelPicado, svgDeAvatar } from '@loteria/core';
 import { colores, comunes, espacio, fuentes, radio } from '../../tema';
 import { Boton } from './Boton';
 
@@ -52,13 +53,49 @@ export function Campo({ etiqueta, error, style, ...resto }: TextInputProps & { e
 // ---------- Avatar ----------
 const colorDe = (texto: string) => papelPicado[[...texto].reduce((a, c) => a + c.charCodeAt(0), 0) % papelPicado.length];
 
-export function Avatar({ nombre, tamano = 36, conectado }: { nombre: string; tamano?: number; conectado?: boolean }) {
+interface AvatarProps {
+  nombre: string;
+  /** Clave de la skin de avatar; sin ella se usa la inicial en un círculo de color */
+  clave?: string | null;
+  tamano?: number;
+  conectado?: boolean;
+}
+
+export function Avatar({ nombre, clave, tamano = 36, conectado }: AvatarProps) {
+  const punto = conectado !== undefined && (
+    <View style={[estilos.punto, { backgroundColor: conectado ? colores.verde : colores.gris, width: tamano * 0.3, height: tamano * 0.3, borderRadius: tamano }]} />
+  );
+  if (clave)
+    return (
+      <View style={{ width: tamano, height: tamano }}>
+        <SvgXml xml={svgDeAvatar(clave)} width="100%" height="100%" />
+        {punto}
+      </View>
+    );
   return (
     <View style={[estilos.avatar, { width: tamano, height: tamano, borderRadius: tamano / 2, backgroundColor: colorDe(nombre) }]}>
       <Text style={{ color: colores.blanco, fontFamily: fuentes.cuerpoNegra, fontSize: tamano * 0.42 }}>{nombre.trim().charAt(0).toUpperCase()}</Text>
-      {conectado !== undefined && (
-        <View style={[estilos.punto, { backgroundColor: conectado ? colores.verde : colores.gris, width: tamano * 0.3, height: tamano * 0.3, borderRadius: tamano }]} />
-      )}
+      {punto}
+    </View>
+  );
+}
+
+// ---------- Interruptor ----------
+export function Interruptor({ etiqueta, activo, alCambiar }: { etiqueta: string; activo: boolean; alCambiar: (v: boolean) => void }) {
+  return (
+    <View style={[comunes.fila, { flexWrap: 'nowrap' }]}>
+      <Switch value={activo} onValueChange={alCambiar} trackColor={{ true: colores.verde, false: colores.grisClaro }} thumbColor={colores.blanco} accessibilityLabel={etiqueta} />
+      <Text style={comunes.negrita}>{etiqueta}</Text>
+    </View>
+  );
+}
+
+// ---------- Barra de avance ----------
+export function Avance({ valor, total, tono = 'rosa' }: { valor: number; total: number; tono?: 'rosa' | 'verde' | 'amarillo' }) {
+  const pct = total ? Math.min(100, Math.round((valor / total) * 100)) : 0;
+  return (
+    <View style={estilos.avance} accessibilityRole="progressbar" accessibilityValue={{ now: valor, min: 0, max: total }}>
+      <View style={{ width: `${pct}%`, height: '100%', backgroundColor: colores[tono] }} />
     </View>
   );
 }
@@ -108,6 +145,7 @@ export function Vacio({ children }: { children: ReactNode }) {
 // ---------- Pestañas ----------
 export function Pestanas<T extends string>({ opciones, valor, alCambiar }: { opciones: { valor: T; etiqueta: string }[]; valor: T; alCambiar: (v: T) => void }) {
   return (
+    <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ flexGrow: 0 }}>
     <View style={estilos.pestanas} accessibilityRole="tablist">
       {opciones.map((o) => {
         const activa = o.valor === valor;
@@ -118,6 +156,7 @@ export function Pestanas<T extends string>({ opciones, valor, alCambiar }: { opc
         );
       })}
     </View>
+    </ScrollView>
   );
 }
 
@@ -136,4 +175,5 @@ const estilos = StyleSheet.create({
   pestanas: { flexDirection: 'row', borderWidth: 2, borderColor: colores.tinta, borderRadius: radio.total, padding: 3, backgroundColor: colores.papel, alignSelf: 'flex-start' },
   pestana: { paddingHorizontal: 16, paddingVertical: 6, borderRadius: radio.total },
   pestanaTexto: { fontFamily: fuentes.cuerpoNegra, color: colores.tinta },
+  avance: { height: 10, borderWidth: 1.5, borderColor: colores.tinta, borderRadius: radio.total, backgroundColor: colores.blanco, overflow: 'hidden' },
 });

@@ -9,16 +9,16 @@
   font-weight: 800;
   cursor: pointer;
   transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.15s ease;
-  box-shadow: 0 3px 0 var(--tinta);
+  box-shadow: 0 3px 0 var(--sombra);
   white-space: nowrap;
 }
 .boton:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 4px 0 var(--tinta);
+  box-shadow: 0 4px 0 var(--sombra);
 }
 .boton:active:not(:disabled) {
   transform: translateY(2px);
-  box-shadow: 0 1px 0 var(--tinta);
+  box-shadow: 0 1px 0 var(--sombra);
 }
 .boton:disabled {
   opacity: 0.5;
@@ -93,7 +93,7 @@
   border: 2px solid var(--tinta);
   border-radius: 8px;
   padding: 10px 12px;
-  background: var(--blanco);
+  background: var(--superficie);
   font-weight: 600;
 }
 .campoError {
@@ -191,13 +191,81 @@
   border: 2px solid var(--tinta);
   border-radius: 12px;
   background: var(--amarillo-suave);
-  box-shadow: 0 4px 0 var(--tinta);
+  box-shadow: 0 4px 0 var(--sombra);
   font-weight: 700;
   animation: bajar 0.25s ease-out;
 }
 .avisoError {
-  background: #FFE3E6;
+  background: color-mix(in srgb, var(--rojo) 18%, var(--papel));
 }
 @keyframes bajar {
   from { opacity: 0; transform: translateY(-12px); }
+}
+
+/* ---------- Avatar con dibujo ---------- */
+.avatarDibujo {
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.avatarDibujo img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ---------- Interruptor ---------- */
+.interruptor {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  background: none;
+  padding: 4px 0;
+  font-weight: 800;
+  color: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.riel {
+  position: relative;
+  width: 40px;
+  height: 22px;
+  border-radius: 999px;
+  border: 2px solid var(--tinta);
+  background: var(--gris-claro);
+  transition: background 0.15s ease;
+  flex-shrink: 0;
+}
+.rielActivo {
+  background: var(--verde);
+}
+.perilla {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--blanco);
+  border: 1.5px solid var(--tinta);
+  transition: transform 0.15s ease;
+}
+.rielActivo .perilla {
+  transform: translateX(18px);
+}
+
+/* ---------- Barra de avance ---------- */
+.avance {
+  display: block;
+  height: 10px;
+  border: 1.5px solid var(--tinta);
+  border-radius: 999px;
+  background: var(--superficie);
+  overflow: hidden;
+}
+.avanceRelleno {
+  display: block;
+  height: 100%;
+  transition: width 0.4s ease;
 }

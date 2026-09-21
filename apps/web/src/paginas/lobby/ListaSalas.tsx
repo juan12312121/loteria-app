@@ -15,7 +15,7 @@ const ESTADO = {
   cerrada: { tono: 'neutro', texto: 'Cerrada' },
 } as const;
 
-export function ListaSalas<T extends Sala & { jugadores?: number }>({ consulta, vacio, alEntrar }: Props<T>) {
+export function ListaSalas<T extends Sala & { jugadores?: number; anfitrion?: string }>({ consulta, vacio, alEntrar }: Props<T>) {
   if (consulta.cargando && !consulta.data) return <Cargando />;
   if (consulta.error) return <MensajeError mensaje={consulta.error} alReintentar={consulta.recargar} />;
   if (!consulta.data?.length) return <Vacio>{vacio}</Vacio>;
@@ -27,8 +27,8 @@ export function ListaSalas<T extends Sala & { jugadores?: number }>({ consulta, 
           <div className={s.filaSalaInfo}>
             <div className={s.filaSalaNombre}>{sala.nombre}</div>
             <div className="texto-suave">
-              Código {sala.codigo}
-              {sala.jugadores !== undefined && ` · ${sala.jugadores} jugadores`}
+              {sala.anfitrion ? `De ${sala.anfitrion}` : `Código ${sala.codigo}`}
+              {sala.jugadores !== undefined && ` · ${sala.jugadores}/${sala.max_jugadores} jugadores`}
               {sala.costo_tabla > 0 && ` · ${sala.costo_tabla} fichas por tabla`}
             </div>
           </div>

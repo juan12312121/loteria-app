@@ -1,7 +1,8 @@
 import type { HttpClient } from './http';
 import type {
-  Carta, CartaCantada, EstadoRonda, Equipo, Figura, JugadorSala, LugarRanking, MiTabla,
-  MovimientoPuntos, NuevaSala, Partida, Perfil, Sala, SalaMia, Sesion, Skin, Tabla, TipoSkin,
+  Carta, CartaCantada, Coleccion, EstadoRonda, Equipo, Figura, JugadorSala, LugarRanking, MiTabla,
+  MovimientoPuntos, NuevaSala, Partida, Perfil, PerfilJuego, RankingSemanal, ResumenProgreso, Sala, SalaMia,
+  SalaPublica, Sesion, Skin, Tabla, TipoSkin,
 } from '../tipos';
 
 /**
@@ -18,12 +19,14 @@ export function crearApi(http: HttpClient) {
 
     salas: {
       mias: () => http.get<SalaMia[]>('/salas/mias'),
-      publicas: () => http.pagina<Sala>('/salas', { porPagina: 20, orden: '-creado_en' }),
+      publicas: () => http.get<SalaPublica[]>('/salas/publicas'),
       obtener: (id: string) => http.get<Sala>(`/salas/${id}`),
       crear: (datos: NuevaSala) => http.post<Sala>('/salas', datos),
       unirse: (codigo: string) => http.post<Sala>(`/salas/unirse/${codigo.trim().toUpperCase()}`),
       salir: (id: string) => http.post<void>(`/salas/${id}/salir`),
       jugadores: (id: string) => http.get<JugadorSala[]>(`/salas/${id}/jugadores`),
+      agregarBot: (id: string) => http.post<{ id: string; nombre: string }>(`/salas/${id}/bots`),
+      quitarBot: (id: string, botId: string) => http.delete(`/salas/${id}/bots/${botId}`),
     },
 
     partidas: {
@@ -52,6 +55,7 @@ export function crearApi(http: HttpClient) {
 
     skins: {
       catalogo: (tipo?: TipoSkin) => http.get<Skin[]>('/skins/catalogo', { tipo }),
+      coleccion: () => http.get<Coleccion[]>('/skins/coleccion'),
       canjear: (id: string) => http.post<{ skin: Skin; puntos_restantes: number }>(`/skins/${id}/canjear`),
       equipar: (id: string) => http.post<Equipo>(`/skins/${id}/equipar`),
       quitar: (tipo: TipoSkin) => http.delete<Equipo>(`/skins/equipo/${tipo}`),
@@ -60,6 +64,14 @@ export function crearApi(http: HttpClient) {
     puntos: {
       ranking: (limite = 20) => http.get<LugarRanking[]>('/puntos/ranking', { limite }),
       mios: () => http.pagina<MovimientoPuntos>('/puntos/mios', { porPagina: 30 }).then((p) => p.data),
+    },
+
+    progreso: {
+      resumen: () => http.get<ResumenProgreso>('/progreso'),
+      reclamarDiario: () => http.post<{ dias_seguidos: number; puntos: number; saldo: number }>('/progreso/diario'),
+      cobrarMision: (clave: string) => http.post<{ puntos: number; saldo: number; skin: Skin | null }>(`/progreso/misiones/${clave}/cobrar`),
+      ranking: (limite = 20) => http.get<RankingSemanal>('/progreso/ranking', { limite }),
+      perfil: (usuarioId?: string) => http.get<PerfilJuego>(usuarioId ? `/progreso/perfil/${usuarioId}` : '/progreso/perfil'),
     },
   };
 }

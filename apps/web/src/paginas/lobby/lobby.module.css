@@ -1,0 +1,87 @@
+.progreso {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  gap: 16px;
+  margin-bottom: 16px;
+  align-items: start;
+}
+.dias {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.dia {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 2px;
+  border: 2px solid var(--gris-claro);
+  border-radius: 10px;
+  background: var(--superficie);
+  font-size: 0.9rem;
+}
+.diaNumero {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: var(--tinta-suave);
+  white-space: nowrap;
+}
+.diaHecho {
+  border-color: var(--verde);
+  background: var(--verde-suave);
+  color: var(--verde);
+}
+.diaHoy {
+  border-color: var(--rosa);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--rosa) 30%, transparent);
+  animation: latirDia 1.2s ease-in-out infinite;
+}
+@keyframes latirDia {
+  50% { transform: translateY(-3px); }
+}
+.grupoMisiones + .grupoMisiones {
+  margin-top: 12px;
+}
+.periodo {
+  font-family: var(--f-cuerpo);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tinta-suave);
+  margin: 0 0 6px;
+}
+.mision {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px dashed var(--gris-claro);
+}
+.misionInfo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.9rem;
+}
+.misionCobrada {
+  opacity: 0.6;
+}
+.premioSkin {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+}
+.error {
+  color: var(--rojo);
+  font-weight: 700;
+  margin: 8px 0 0;
+}
+@media (max-width: 900px) {
+  .progreso {
+    grid-template-columns: 1fr;
+  }
+}

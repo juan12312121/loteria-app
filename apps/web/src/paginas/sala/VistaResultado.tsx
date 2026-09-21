@@ -1,8 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { CASILLAS, indicesDeCasillas, useSesion, type Casilla, type Ganador } from '@loteria/core';
-import { Chip, Tarjeta } from '../../componentes/ui/basicos';
+import { Avatar, Chip, Tarjeta } from '../../componentes/ui/basicos';
 import { Boton } from '../../componentes/ui/Boton';
 import { TablaLoteria } from '../../componentes/juego/TablaLoteria';
+import { Confeti } from '../../componentes/ui/Confeti';
 import type { ContextoSala } from './tipos';
 import s from '../paginas.module.css';
 
@@ -25,9 +26,13 @@ export function VistaResultado({ sala, ronda, porId }: ContextoSala) {
   const cartasGanadoras = cartasDeCasillas(destacado?.casillas);
   const nombres = ganadores.map((g) => (g.usuario_id === perfil?.id ? 'Tú' : g.nombre)).join(' y ');
   const carta = ronda.resultado?.carta ?? estado?.partida.indice;
+  // El festejo solo cuando se vio en vivo (no al volver a entrar a una ronda vieja)
+  const enVivo = !!ronda.resultado && ganadores.length > 0;
+  const avatarDe = (usuarioId: string) => estado?.tablasOcupadas.find((t) => t.usuario_id === usuarioId)?.avatar ?? null;
 
   return (
     <div className="pila">
+      {enVivo && <Confeti />}
       <div className={s.resultado}>
         <h2 className={s.grandeTitulo}>{ganadores.length ? '¡LOTERÍA!' : 'Se acabó el mazo'}</h2>
         <p style={{ fontSize: '1.2rem', fontWeight: 800, margin: '8px 0 0' }}>
@@ -47,12 +52,16 @@ export function VistaResultado({ sala, ronda, porId }: ContextoSala) {
               cantadas={ronda.cantadas}
               marcas={0xffff}
               destacadas={indicesDeCasillas(destacado.casillas!)}
+              encender={enVivo}
             />
           )}
           {ganadores.map((g) => (
             <Tarjeta key={g.usuario_id} titulo="Premio del pozo">
               <div className="fila" style={{ justifyContent: 'space-between' }}>
-                <b>{g.nombre}</b>
+                <span className="fila">
+                  <Avatar nombre={g.nombre} clave={avatarDe(g.usuario_id)} />
+                  <b>{g.nombre}</b>
+                </span>
                 <Chip tono="amarillo">+{g.premio} fichas</Chip>
               </div>
             </Tarjeta>

@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSesion } from '@loteria/core';
-import { Chip, Pestanas, Tarjeta, Vacio } from '../../componentes/ui/basicos';
+import { Chip, Interruptor, Pestanas, Tarjeta, Vacio } from '../../componentes/ui/basicos';
+import { cambiarPreferencia, usePreferencias } from '../../preferencias';
 import { Boton } from '../../componentes/ui/Boton';
 import { Cantor, MarcadorLlena, TableroCantor } from '../../componentes/juego/Cantor';
 import { TablaLoteria } from '../../componentes/juego/TablaLoteria';
@@ -16,6 +17,7 @@ import type { ContextoSala } from './tipos';
  */
 export function VistaRonda({ sala, ronda, porId, cartas }: ContextoSala) {
   const { perfil } = useSesion();
+  const { autoMarcar } = usePreferencias();
   const abajo = useSafeAreaInsets().bottom;
   const [verTablero, setVerTablero] = useState(false);
   const estado = ronda.estado;
@@ -62,6 +64,7 @@ export function VistaRonda({ sala, ronda, porId, cartas }: ContextoSala) {
           <Vacio>Llegaste con la ronda empezada. Entras en la siguiente.</Vacio>
         ) : (
           <>
+            <Interruptor etiqueta="Auto-marcar mis tablas" activo={autoMarcar} alCambiar={(v) => cambiarPreferencia('autoMarcar', v)} />
             {estado.misTablas.length > 1 && (
               <Pestanas opciones={estado.misTablas.map((t) => ({ valor: t.id, etiqueta: t.nombre }))} valor={actual.id} alCambiar={ronda.seleccionar} />
             )}

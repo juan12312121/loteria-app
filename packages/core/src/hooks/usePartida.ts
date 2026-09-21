@@ -3,6 +3,7 @@ import { useServicios, useSesion } from '../contexto/LoteriaProvider';
 import { alternarBit, CASILLAS, indicesDeCasillas, progresoTabla, tieneBit } from '../juego/tabla';
 import type { EstadoRonda, EventoFiguraLograda, EventoGanadores, LogroRonda, MiTabla } from '../tipos';
 import { useAccion, useCola, useConsulta, useEventoSala } from './genericos';
+import { useAlReconectar } from './useConexion';
 
 /** Aviso que aparece durante la ronda (figuras que el tablero detectó). */
 export interface AvisoRonda {
@@ -32,7 +33,12 @@ const conTabla = (estado: EstadoRonda, id: string, cambiar: (t: MiTabla) => MiTa
  * resultado y las acciones del jugador y del anfitrión. El jugador no grita:
  * el tablero (servidor) declara ¡Lotería! cuando una tabla se llena.
  */
-export function usePartida(partidaId: string | null) {
+export interface OpcionesPartida {
+  /** Marca sola cada carta cantada en mis tablas (útil con muchas tablas) */
+  autoMarcar?: boolean;
+}
+
+export function usePartida(partidaId: string | null, { autoMarcar = false }: OpcionesPartida = {}) {
   const { api } = useServicios();
   const { perfil, refrescar } = useSesion();
 
@@ -82,6 +88,9 @@ export function usePartida(partidaId: string | null) {
     void ronda.recargar();
     void refrescar();
   });
+
+  // Reconexión: las cartas cantadas mientras no había internet llegan con el estado completo
+  useAlReconectar(() => void ronda.recargar());
 
   // ---------- derivados ----------
   const estado = ronda.data ?? null;
@@ -135,6 +144,23 @@ export function usePartida(partidaId: string | null) {
     [api, cantadas, estado?.misTablas, ronda],
   );
 
+  /** Pone en cada tabla la marca de toda carta ya cantada que le falte. */
+  const marcarTodo = useCallback(() => {
+    for (const tabla of estado?.misTablas ?? []) {
+      const actual = marcasAlDia.current.get(tabla.id) ?? tabla.marcas;
+      const completas = tabla.cartas.reduce((m, carta, i) => (cantadas.has(carta) ? m | (1 << i) : m), actual);
+      if (completas === actual) continue;
+      marcasAlDia.current.set(tabla.id, completas);
+      ronda.fijar((s) => (s ? conTabla(s, tabla.id, (t) => ({ ...t, marcas: completas })) : s));
+      envios.current = envios.current.then(() => api.partidas.marcar(tabla.id, completas).then(() => undefined, () => undefined));
+    }
+  }, [api, cantadas, estado?.misTablas, ronda]);
+
+  const enJuego = estado?.partida.estado === 'cantando' || estado?.partida.estado === 'pausada';
+  useEffect(() => {
+    if (autoMarcar && enJuego) marcarTodo();
+  }, [autoMarcar, enJuego, marcarTodo]);
+
   const conRecarga = <A extends unknown[]>(fn: (...a: A) => Promise<unknown>) =>
     async (...a: A) => {
       await fn(...a);
@@ -165,7 +191,7 @@ export function usePartida(partidaId: string | null) {
     masCerca,
     tablaVisible,
     seleccionar: setSeleccionada,
-    jugador: { marcar, elegirTabla, soltarTabla },
+    jugador: { marcar, marcarTodo, elegirTabla, soltarTabla },
     anfitrion: { iniciar, pausar, reanudar, cancelar, cantar },
   };
 }

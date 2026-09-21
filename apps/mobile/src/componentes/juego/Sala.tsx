@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Linking, Share, StyleSheet, Text, View } from 'react-native';
+import { Linking, Pressable, Share, StyleSheet, Text, View } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
 import type { JugadorSala } from '@loteria/core';
 import { colores, comunes, fuentes, radio } from '../../tema';
@@ -44,18 +44,31 @@ export function CodigoSala({ codigo, nombreSala }: { codigo: string; nombreSala:
   );
 }
 
-/** Jugadores de la sala con su estado de conexión. */
-export function ListaJugadores({ jugadores, detalle }: { jugadores: JugadorSala[]; detalle?: (j: JugadorSala) => string | undefined }) {
+interface ListaProps {
+  jugadores: JugadorSala[];
+  detalle?: (j: JugadorSala) => string | undefined;
+  /** Solo el anfitrión, fuera de ronda: quitar un bot */
+  alQuitarBot?: (botId: string) => void;
+}
+
+/** Jugadores de la sala con su avatar y estado de conexión. */
+export function ListaJugadores({ jugadores, detalle, alQuitarBot }: ListaProps) {
   return (
     <View>
       {jugadores.map((j, i) => (
         <View key={j.id} style={[estilos.jugador, i === jugadores.length - 1 && { borderBottomWidth: 0 }]}>
-          <Avatar nombre={j.nombre} conectado={j.conectado} />
+          <Avatar nombre={j.nombre} clave={j.avatar} conectado={j.conectado} />
           <Text style={[comunes.negrita, { flex: 1 }]}>
             {j.nombre}
             {detalle?.(j) ? <Text style={comunes.textoSuave}>{` · ${detalle(j)}`}</Text> : null}
           </Text>
           {j.rol === 'anfitrion' && <Chip tono="amarillo">Anfitrión</Chip>}
+          {j.bot && <Chip>🤖 Bot</Chip>}
+          {j.bot && alQuitarBot && (
+            <Pressable onPress={() => alQuitarBot(j.id)} accessibilityLabel={`Quitar a ${j.nombre}`} hitSlop={8}>
+              <Text style={[comunes.negrita, { color: colores.rojo, fontSize: 18 }]}>✕</Text>
+            </Pressable>
+          )}
         </View>
       ))}
     </View>

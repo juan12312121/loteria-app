@@ -151,6 +151,46 @@ const FICHAS: Record<string, string> = {
     c(62, 38, 2, TINTA, sinTrazo) +
     p('M40 48 Q44 58 52 60', 'none', 'stroke="#067038" stroke-width="2"'),
 
+  // ---------- de temporada ----------
+  tricolor:
+    p('M40 62 L30 92 L40 86 L46 94 L50 66Z', '#0B8A4A') +
+    p('M60 62 L70 92 L60 86 L54 94 L50 66Z', '#D7263D') +
+    c(50, 44, 30, '#0B8A4A') +
+    c(50, 44, 21, '#FFFFFF') +
+    c(50, 44, 12, '#D7263D') +
+    p(estrella(50, 44, 7), '#F7B500', 'stroke-width="1.5"'),
+
+  cempasuchil:
+    [0, 45, 90, 135, 180, 225, 270, 315].map((g) => e(50, 26, 10, 18, '#F7A21B', `transform="rotate(${g} 50 50)"`)).join('') +
+    [22, 67, 112, 157, 202, 247, 292, 337].map((g) => e(50, 33, 8, 13, '#F26A1B', `transform="rotate(${g} 50 50)"`)).join('') +
+    c(50, 50, 11, '#E0530F') +
+    c(50, 50, 5, '#8A3A00', sinTrazo),
+
+  pinata:
+    [0, 51.4, 102.8, 154.2, 205.6, 257, 308.4].map((g, i) =>
+      p('M44 34 L50 6 L56 34Z', ['#E4007C', '#F7B500', '#0B8A4A', '#1E4FA3', '#F26A1B', '#7B2FBE', '#D7263D'][i], `transform="rotate(${g} 50 52)"`),
+    ).join('') +
+    c(50, 52, 20, '#FFE066') +
+    p('M32 46 H68 M31 54 H69 M34 62 H66', 'none', 'stroke="#E4007C" stroke-width="3"'),
+
+  // ---------- exclusivas ----------
+  sol_azteca:
+    [...Array(16)].map((_, i) => p('M46 12 L50 2 L54 12Z', '#E0B100', `transform="rotate(${i * 22.5} 50 50)"`)).join('') +
+    c(50, 50, 38, '#F7C948') +
+    c(50, 50, 30, 'none', 'stroke="#9C7A00" stroke-width="2" stroke-dasharray="4 3"') +
+    c(50, 50, 20, '#E0B100') +
+    c(43, 46, 2.5, TINTA, sinTrazo) + c(57, 46, 2.5, TINTA, sinTrazo) +
+    p('M44 57 Q50 52 56 57 L50 63Z', '#D7263D') +
+    p('M50 30 L50 24 M50 70 L50 76 M30 50 L24 50 M70 50 L76 50', 'none', 'stroke="#9C7A00" stroke-width="3"'),
+
+  corona_oro:
+    p('M18 72 L14 30 L32 48 L50 20 L68 48 L86 30 L82 72Z', '#F7C948') +
+    p('M18 72 H82 V84 H18Z', '#E0B100') +
+    c(14, 30, 5, '#D7263D') + c(50, 20, 6, '#1E4FA3') + c(86, 30, 5, '#0B8A4A') +
+    e(50, 60, 6, 8, '#D7263D') + e(32, 62, 4, 5, '#0B8A4A') + e(68, 62, 4, 5, '#1E4FA3') +
+    c(30, 78, 2.5, '#FFFFFF', sinTrazo) + c(50, 78, 2.5, '#FFFFFF', sinTrazo) + c(70, 78, 2.5, '#FFFFFF', sinTrazo) +
+    brillo('M26 60 L24 42'),
+
   aguila:
     p('M24 76 Q18 42 42 26 Q62 14 76 30 Q85 43 71 50 L61 53 Q58 66 65 80Z', '#7A4B2A') +
     p('M31 46 Q40 30 58 27', 'none', 'stroke="#E0B100" stroke-width="4"') +

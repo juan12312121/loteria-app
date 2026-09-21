@@ -6,7 +6,7 @@ import { useAccion, useConsulta } from './genericos';
 export function useLobby() {
   const { api } = useServicios();
   const mias = useConsulta(() => api.salas.mias(), [api]);
-  const publicas = useConsulta(async () => (await api.salas.publicas()).data.filter((s) => s.estado !== 'cerrada'), [api]);
+  const publicas = useConsulta(() => api.salas.publicas(), [api]);
 
   /** Crea la sala y le abre la primera ronda para que todos puedan elegir tabla. */
   const crear = useAccion(async (datos: NuevaSala) => {

@@ -21,7 +21,38 @@ export const colores = {
   rojo: '#D7263D',
   naranja: '#F26A1B',
   blanco: '#FFFFFF',
+  /** Fondo de campos y barras (blanco de día, oscuro de noche) */
+  superficie: '#FFFFFF',
+  /** Sombra sólida de botones y tarjetas */
+  sombra: '#1C1A17',
 } as const;
+
+export type NombreColor = keyof typeof colores;
+
+/**
+ * "Noche de feria": misma paleta tradicional sobre morado de noche.
+ * Las cartas y fichas conservan sus colores (como la baraja real).
+ */
+export const coloresNoche: Record<NombreColor, string> = {
+  crema: '#1B1530',
+  papel: '#261E3D',
+  tinta: '#F4ECDC',
+  tintaSuave: '#C3B9D4',
+  gris: '#9087A6',
+  grisClaro: '#3B3256',
+  rosa: '#FF3D9A',
+  rosaOscuro: '#E4007C',
+  amarillo: '#FFC23D',
+  amarilloSuave: '#4A3B14',
+  anil: '#8FB0FF',
+  verde: '#2FC774',
+  verdeSuave: '#173B2B',
+  rojo: '#FF5C6E',
+  naranja: '#FF8A3D',
+  blanco: '#FFFFFF',
+  superficie: '#1F1833',
+  sombra: '#08050F',
+};
 
 export const coloresRareza: Record<Rareza, string> = {
   comun: colores.gris,
@@ -49,5 +80,5 @@ export const fuentes = {
   cuerpo: 'Nunito Sans',
 } as const;
 
-export const tema = { colores, coloresRareza, papelPicado, espacio, radio, fuentes } as const;
+export const tema = { colores, coloresNoche, coloresRareza, papelPicado, espacio, radio, fuentes } as const;
 export type Tema = typeof tema;

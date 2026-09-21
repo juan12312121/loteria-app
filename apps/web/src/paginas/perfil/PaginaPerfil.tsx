@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom';
-import { Coins, Flame, Star } from 'lucide-react';
-import { usePerfilJuego, useSesion, type LugarRanking, type MovimientoPuntos } from '@loteria/core';
-import { Avatar, Cargando, Chip, Tarjeta, Vacio } from '../../componentes/ui/basicos';
+import { CalendarCheck, Coins, Flame, Star } from 'lucide-react';
+import { usePerfilJuego, useSesion, type MovimientoPuntos, type PerfilJuego, type TipoSkin } from '@loteria/core';
+import { Avance, Avatar, Cargando, Chip, MensajeError, Tarjeta, Vacio } from '../../componentes/ui/basicos';
+import { Carta } from '../../componentes/juego/Carta';
 import s from '../paginas.module.css';
 
 const ETIQUETAS: Record<MovimientoPuntos['tipo'], string> = {
@@ -9,94 +10,159 @@ const ETIQUETAS: Record<MovimientoPuntos['tipo'], string> = {
   victoria: 'Victoria',
   logro: 'Figura',
   bono: 'Bono',
-  penalizacion: 'Lotería falsa',
+  penalizacion: 'Penalización',
   canje: 'Canje',
   ajuste: 'Ajuste',
+  diario: 'Recompensa diaria',
+  mision: 'Misión',
+  ranking: 'Ranking semanal',
 };
 
-const MEDALLAS = ['🥇', '🥈', '🥉'];
-const ALTURAS = [120, 150, 100];
+const NOMBRES_TIPO: Record<TipoSkin, string> = { ficha: 'Fichas', carta: 'Cartas', avatar: 'Avatares', fondo: 'Fondos' };
+
+const formatoFecha = new Intl.DateTimeFormat('es-MX', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
 
 export function PaginaPerfil() {
-  const { perfil } = useSesion();
-  const { ranking, historial, cargando } = usePerfilJuego();
-  if (!perfil) return null;
+  const { perfil: sesion } = useSesion();
+  const { perfil, movimientos, cargando, error } = usePerfilJuego();
+  if (!sesion) return null;
+  if (cargando && !perfil) return <Cargando />;
+  if (error || !perfil) return <MensajeError mensaje={error ?? 'No se pudo cargar tu perfil'} />;
 
   return (
-    <div className={s.tresColumnas} style={{ marginTop: 16 }}>
-      <Tarjeta titulo="Mi perfil">
-        <div className="pila" style={{ alignItems: 'center', textAlign: 'center' }}>
-          <Avatar nombre={perfil.nombre} tamano={84} />
-          <h2>{perfil.nombre}</h2>
-          <div className="fila" style={{ justifyContent: 'center' }}>
-            <Chip tono="amarillo" icono={<Star size={14} />}>{perfil.puntos} pts</Chip>
-            <Chip icono={<Coins size={14} />}>{perfil.fichas} fichas</Chip>
-            <Chip tono="rosa" icono={<Flame size={14} />}>Racha {perfil.racha}</Chip>
+    <div className="pila" style={{ marginTop: 16 }}>
+      <div className={s.tresColumnas}>
+        <Tarjeta titulo="Mi perfil">
+          <div className="pila" style={{ alignItems: 'center', textAlign: 'center', gap: 10 }}>
+            <Avatar nombre={perfil.nombre} clave={perfil.avatar} tamano={96} />
+            <h2>{perfil.nombre}</h2>
+            <div className="fila" style={{ justifyContent: 'center' }}>
+              <Chip tono="amarillo" icono={<Star size={14} />}>{perfil.puntos} pts</Chip>
+              <Chip icono={<Coins size={14} />}>{sesion.fichas} fichas</Chip>
+            </div>
+            <div className="fila" style={{ justifyContent: 'center' }}>
+              <Chip tono="rosa" icono={<Flame size={14} />}>Racha {perfil.racha} (mejor {perfil.mejor_racha})</Chip>
+              <Chip tono="verde" icono={<CalendarCheck size={14} />}>{perfil.dias_seguidos} día(s) seguidos</Chip>
+            </div>
+            <div className="texto-suave">
+              Ficha: <b>{sesion.equipo.ficha?.nombre ?? 'Frijolito'}</b> · Cartas: <b>{sesion.equipo.carta?.nombre ?? 'Clásica'}</b>
+              <br />
+              Fondo: <b>{sesion.equipo.fondo?.nombre ?? 'Feria'}</b>
+            </div>
+            <Link to="/tienda">Cambiar en la tienda</Link>
           </div>
-          <div className="texto-suave">
-            Ficha: <b>{perfil.equipo.ficha?.nombre ?? 'Frijolito'}</b> · Cartas: <b>{perfil.equipo.carta?.nombre ?? 'Clásica'}</b>
-          </div>
-          <Link to="/tienda">Cambiar en la tienda</Link>
-        </div>
-      </Tarjeta>
+        </Tarjeta>
 
-      <Tarjeta titulo="Ranking de puntos">
-        {cargando ? <Cargando /> : <Ranking lugares={ranking} miId={perfil.id} />}
-      </Tarjeta>
+        <Tarjeta titulo="Estadísticas">
+          <Estadisticas perfil={perfil} />
+        </Tarjeta>
 
-      <Tarjeta titulo="Historial de puntos">
-        {!historial.length ? (
-          <Vacio>Juega tu primera ronda para ganar puntos.</Vacio>
-        ) : (
-          historial.map((m) => (
-            <div key={m.id} className={s.movimiento}>
+        <Tarjeta titulo="Colección">
+          <div className="pila" style={{ gap: 10 }}>
+            <div className="fila" style={{ justifyContent: 'space-between' }}>
+              <b>Total</b>
               <span>
-                <b>{ETIQUETAS[m.tipo]}</b>
-                <div className="texto-suave">{m.detalle}</div>
-              </span>
-              <span className={m.monto >= 0 ? s.positivo : s.negativo}>
-                {m.monto >= 0 ? '+' : ''}
-                {m.monto}
+                {perfil.skins}/{perfil.skins_total}
               </span>
             </div>
-          ))
-        )}
-      </Tarjeta>
+            <Avance valor={perfil.skins} total={perfil.skins_total} tono="verde" />
+            {perfil.coleccion.map((c) => (
+              <div key={c.tipo}>
+                <div className="fila" style={{ justifyContent: 'space-between' }}>
+                  <span>{NOMBRES_TIPO[c.tipo]}</span>
+                  <span className="texto-suave">
+                    {c.tengo}/{c.total}
+                  </span>
+                </div>
+                <Avance valor={c.tengo} total={c.total} />
+              </div>
+            ))}
+            <Link to="/tienda">Completar el álbum</Link>
+          </div>
+        </Tarjeta>
+      </div>
+
+      <div className={s.dosColumnas}>
+        <Tarjeta titulo="Últimas partidas">
+          {!perfil.historial.length ? (
+            <Vacio>Juega tu primera ronda para ver tu historial.</Vacio>
+          ) : (
+            perfil.historial.map((h) => (
+              <div key={h.partida_id} className={s.movimiento}>
+                <span>
+                  <b>{h.gano ? '🏆 Ganaste' : 'Jugaste'}</b> en {h.sala}
+                  <div className="texto-suave">
+                    {formatoFecha.format(new Date(h.terminada_en))} · {h.tablas} tabla(s)
+                  </div>
+                </span>
+                <span className={s.positivo}>+{h.puntos}</span>
+              </div>
+            ))
+          )}
+        </Tarjeta>
+
+        <Tarjeta titulo="Movimientos de puntos">
+          {!movimientos.length ? (
+            <Vacio>Aquí verás lo que ganas y canjeas.</Vacio>
+          ) : (
+            movimientos.map((m) => (
+              <div key={m.id} className={s.movimiento}>
+                <span>
+                  <b>{ETIQUETAS[m.tipo] ?? m.tipo}</b>
+                  <div className="texto-suave">{m.detalle}</div>
+                </span>
+                <span className={m.monto >= 0 ? s.positivo : s.negativo}>
+                  {m.monto >= 0 ? '+' : ''}
+                  {m.monto}
+                </span>
+              </div>
+            ))
+          )}
+        </Tarjeta>
+      </div>
     </div>
   );
 }
 
-function Ranking({ lugares, miId }: { lugares: LugarRanking[]; miId: string }) {
-  if (!lugares.length) return <Vacio>Todavía no hay puntos.</Vacio>;
-  const podio = [lugares[1], lugares[0], lugares[2]];
+function Estadisticas({ perfil }: { perfil: PerfilJuego }) {
+  const datos = [
+    { etiqueta: 'Partidas', valor: perfil.partidas },
+    { etiqueta: 'Victorias', valor: perfil.victorias },
+    { etiqueta: 'Efectividad', valor: `${perfil.efectividad} %` },
+    { etiqueta: 'Tablas jugadas', valor: perfil.tablas },
+    { etiqueta: 'Figuras logradas', valor: perfil.logros },
+    { etiqueta: 'Puntos ganados', valor: perfil.puntos_ganados },
+  ];
   return (
-    <div className="pila">
-      <div className={s.podio}>
-        {podio.map((l, i) =>
-          l ? (
-            <div key={l.id}>
-              <div style={{ fontSize: '1.6rem' }}>{MEDALLAS[lugares.indexOf(l)]}</div>
-              <b>{l.nombre}</b>
-              <div
-                className={s.escalon}
-                style={{ height: ALTURAS[i], background: l.id === miId ? 'var(--rosa)' : 'var(--amarillo-suave)', color: l.id === miId ? 'var(--blanco)' : 'inherit' }}
-              >
-                {l.puntos} pts
-              </div>
-            </div>
-          ) : (
-            <div key={i} />
-          ),
-        )}
-      </div>
-      <ol start={4} style={{ margin: 0, paddingLeft: 24 }}>
-        {lugares.slice(3).map((l) => (
-          <li key={l.id} className={s.movimiento} style={{ fontWeight: l.id === miId ? 900 : 600 }}>
-            <span>{l.nombre}</span>
-            <span>{l.puntos} pts</span>
-          </li>
+    <div className="pila" style={{ gap: 12 }}>
+      <div className={s.estadisticas}>
+        {datos.map((d) => (
+          <div key={d.etiqueta} className={s.estadistica}>
+            <b>{d.valor}</b>
+            <span className="texto-suave">{d.etiqueta}</span>
+          </div>
         ))}
-      </ol>
+      </div>
+      {perfil.carta_suerte ? (
+        <div className="fila" style={{ flexWrap: 'nowrap' }}>
+          <div style={{ width: 70, flexShrink: 0 }}>
+            <Carta carta={{ id: perfil.carta_suerte.id, nombre: perfil.carta_suerte.nombre, imagen_url: null }} tamano="chica" />
+          </div>
+          <span>
+            <b>Carta de la suerte</b>
+            <div className="texto-suave">
+              {perfil.carta_suerte.nombre}: con ella llenaste tu tabla {perfil.carta_suerte.veces} vez/veces
+            </div>
+          </span>
+        </div>
+      ) : (
+        <p className="texto-suave" style={{ margin: 0 }}>Gana una partida para descubrir tu carta de la suerte.</p>
+      )}
+      {perfil.figura_favorita && (
+        <p className="texto-suave" style={{ margin: 0 }}>
+          Figura que más haces: <b>{perfil.figura_favorita.nombre}</b> ({perfil.figura_favorita.veces})
+        </p>
+      )}
     </div>
   );
 }

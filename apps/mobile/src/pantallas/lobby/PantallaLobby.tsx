@@ -6,6 +6,7 @@ import { comunes } from '../../tema';
 import { UnirseConCodigo } from './UnirseConCodigo';
 import { FormCrearSala } from './FormCrearSala';
 import { ListaSalas } from './ListaSalas';
+import { PanelProgreso } from './PanelProgreso';
 
 export function PantallaLobby() {
   const { mias, publicas, crear, unirse } = useLobby();
@@ -16,6 +17,7 @@ export function PantallaLobby() {
     <ScrollView style={comunes.pantalla} contentContainerStyle={comunes.contenido} refreshControl={<RefreshControl refreshing={mias.cargando && !!mias.data} onRefresh={recargar} />}>
       <Text style={comunes.lema}>¡Se va y se corre!</Text>
       <Text style={comunes.textoSuave}>Se gana con tabla llena; las cuatro esquinas y La O se anuncian en vivo.</Text>
+      <PanelProgreso />
       <Tarjeta titulo="Unirse con código">
         <UnirseConCodigo accion={unirse} alEntrar={irASala} />
       </Tarjeta>
@@ -30,6 +32,7 @@ export function PantallaLobby() {
           consulta={publicas}
           vacio="No hay salas públicas abiertas. ¡Crea una!"
           alEntrar={async (sala) => {
+            if (sala.soy_miembro) return irASala(sala);
             const unida = await unirse.ejecutar(sala.codigo);
             if (unida) irASala(unida);
           }}

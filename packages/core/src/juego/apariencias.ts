@@ -107,6 +107,24 @@ const CARTAS: Record<string, AparienciaCarta> = {
       `<path d="M0 8 Q2.5 6.5 5 8 T10 8 V10 H0Z" fill="#F2D39B"/>`,
   },
 
+  // ---------- de temporada ----------
+  patria: {
+    fondo: '#FFFFFF', marco: '#0B8A4A', acento: '#D7263D', texto: '#0B3B22',
+    patron:
+      `<rect width="10" height="10" fill="#FFFFFF"/>` +
+      `<rect width="3.4" height="10" fill="#0B8A4A"/><rect x="6.6" width="3.4" height="10" fill="#D7263D"/>` +
+      `<circle cx="5" cy="5" r="1.1" fill="#8A5A2B"/>`,
+  },
+
+  posada: {
+    fondo: '#FFF8EC', marco: '#1E2A5A', acento: '#F7B500', texto: '#1E2A5A',
+    patron:
+      `<rect width="10" height="10" fill="#1E2A5A"/>` +
+      `<path d="M5 1.5 L6 4 L8.5 4 L6.5 5.6 L7.3 8.2 L5 6.6 L2.7 8.2 L3.5 5.6 L1.5 4 L4 4Z" fill="#E4007C"/>` +
+      `<circle cx="5" cy="5" r="0.9" fill="#F7B500"/>` +
+      `<circle cx="0.5" cy="9.5" r="0.6" fill="#F7B500"/><circle cx="9.5" cy="0.5" r="0.6" fill="#29F0FF"/>`,
+  },
+
   // ---------- animales nacionales ----------
   selva_jaguar: {
     fondo: '#FFF6E5', marco: '#B8741A', acento: '#0B8A4A', texto: '#3A2208',

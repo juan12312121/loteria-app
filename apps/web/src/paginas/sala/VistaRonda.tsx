@@ -1,6 +1,8 @@
 import { Megaphone, Pause, Play, Sparkles, X } from 'lucide-react';
 import { useSesion } from '@loteria/core';
-import { Chip, Tarjeta, Vacio } from '../../componentes/ui/basicos';
+import { Chip, Interruptor, Tarjeta, Vacio } from '../../componentes/ui/basicos';
+import { cambiarPreferencia, usePreferencias } from '../../preferencias';
+import { sonidos } from '../../sonidos';
 import { Boton } from '../../componentes/ui/Boton';
 import { Cantor, MarcadorLlena, TableroCantor } from '../../componentes/juego/Cantor';
 import { TablaLoteria } from '../../componentes/juego/TablaLoteria';
@@ -11,6 +13,7 @@ import s from '../paginas.module.css';
 /** La ronda en vivo: cantor a la izquierda, mis tablas al centro, tablero y avisos a la derecha. */
 export function VistaRonda({ sala, ronda, porId, cartas }: ContextoSala) {
   const { perfil } = useSesion();
+  const { autoMarcar } = usePreferencias();
   const datosSala = sala.sala!;
   const estado = ronda.estado;
   if (!estado) return null;
@@ -19,6 +22,11 @@ export function VistaRonda({ sala, ronda, porId, cartas }: ContextoSala) {
   const skinFicha = perfil?.equipo.ficha?.clave;
   const skinCarta = perfil?.equipo.carta?.clave;
   const { marcar } = ronda.jugador;
+  const tocar = (tablaId: string, indice: number) => {
+    const tabla = estado.misTablas.find((t) => t.id === tablaId);
+    if (tabla && ronda.cantadas.has(tabla.cartas[indice])) sonidos.ficha();
+    marcar(tablaId, indice);
+  };
   const { cantar, pausar, reanudar, cancelar } = ronda.anfitrion;
 
   return (
@@ -57,7 +65,10 @@ export function VistaRonda({ sala, ronda, porId, cartas }: ContextoSala) {
 
       <div className="pila">
         {ronda.masCerca && <MarcadorLlena faltan={ronda.masCerca.faltan} tabla={ronda.masCerca.tabla.nombre} />}
-        <Tarjeta titulo={`Mis tablas (${estado.misTablas.length})`} acciones={skinFicha && <Chip>Ficha: {perfil?.equipo.ficha?.nombre}</Chip>}>
+        <Tarjeta
+          titulo={`Mis tablas (${estado.misTablas.length})`}
+          acciones={<Interruptor etiqueta="Auto-marcar" activo={autoMarcar} alCambiar={(v) => cambiarPreferencia('autoMarcar', v)} />}
+        >
           {estado.misTablas.length === 0 ? (
             <Vacio>Llegaste con la ronda empezada. Entras en la siguiente.</Vacio>
           ) : (
@@ -73,7 +84,7 @@ export function VistaRonda({ sala, ronda, porId, cartas }: ContextoSala) {
                   destacadas={ronda.destacadas.get(t.id)}
                   skinFicha={skinFicha}
                   skinCarta={skinCarta}
-                  alTocarCasilla={(i) => marcar(t.id, i)}
+                  alTocarCasilla={(i) => tocar(t.id, i)}
                 />
               ))}
             </div>
@@ -108,6 +119,7 @@ export function VistaRonda({ sala, ronda, porId, cartas }: ContextoSala) {
         <Tarjeta titulo={`Jugadores (${sala.jugadores.length})`}>
           <ListaJugadores jugadores={sala.jugadores} />
         </Tarjeta>
+        {skinFicha && <Chip>Ficha: {perfil?.equipo.ficha?.nombre}</Chip>}
       </div>
     </div>
   );

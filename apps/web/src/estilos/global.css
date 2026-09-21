@@ -29,6 +29,11 @@ select {
   font: inherit;
 }
 
+input,
+select {
+  color: inherit;
+}
+
 a {
   color: var(--anil);
 }

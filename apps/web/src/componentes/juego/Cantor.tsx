@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { bitsDeMascara, TOTAL_CARTAS, type Carta as TipoCarta, type CartaCantada } from '@loteria/core';
 import { Carta } from './Carta';
 import { Chip } from '../ui/basicos';
@@ -24,8 +25,11 @@ export function Cantor({ carta, ultimas, velocidadMs, ultimaCartaEn, pausada, sk
           Carta {carta.orden} de {TOTAL_CARTAS}
         </Chip>
       </div>
-      <Carta carta={carta} tamano="grande" skin={skinCarta} />
-      {carta.verso && <p className={s.verso}>«{carta.verso}»</p>}
+      {/* key: cada carta nueva vuelve a montar la vuelta y el verso */}
+      <div key={`carta-${carta.orden}`} className={s.volteo}>
+        <Carta carta={carta} tamano="grande" skin={skinCarta} />
+      </div>
+      {carta.verso && <Verso key={`verso-${carta.orden}`} texto={carta.verso} />}
       {velocidadMs && !pausada && (
         <div className={s.barra} aria-label="Tiempo para la siguiente carta">
           <div key={ultimaCartaEn ?? carta.orden} className={s.barraRelleno} style={{ animationDuration: `${velocidadMs}ms` }} />
@@ -45,6 +49,27 @@ export function Cantor({ carta, ultimas, velocidadMs, ultimaCartaEn, pausada, sk
         </div>
       )}
     </div>
+  );
+}
+
+const MS_POR_LETRA = 28;
+
+/** El verso del cantor, letra por letra como si lo estuviera diciendo. */
+function Verso({ texto }: { texto: string }) {
+  const sinAnimacion = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  const [letras, setLetras] = useState(sinAnimacion ? texto.length : 0);
+  useEffect(() => {
+    if (letras >= texto.length) return;
+    const t = setTimeout(() => setLetras((n) => n + 1), MS_POR_LETRA);
+    return () => clearTimeout(t);
+  }, [letras, texto.length]);
+  return (
+    <p className={s.verso} aria-label={texto}>
+      <span aria-hidden>«{texto.slice(0, letras)}</span>
+      <span aria-hidden className={s.versoPendiente}>
+        {texto.slice(letras)}»
+      </span>
+    </p>
   );
 }
 

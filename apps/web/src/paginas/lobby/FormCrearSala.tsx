@@ -44,7 +44,7 @@ export function FormCrearSala({ accion, alCrear }: Props) {
       </div>
       <label className="fila" style={{ fontWeight: 700 }}>
         <input type="checkbox" checked={datos.privada} onChange={(e) => fijar('privada', e.target.checked)} />
-        Privada (solo entran con el código)
+        Privada (solo entran con el código; si no, sale en «Salas públicas»)
       </label>
       {accion.error && <p style={{ color: 'var(--rojo)', fontWeight: 700, margin: 0 }}>{accion.error}</p>}
       <Boton type="submit" cargando={accion.cargando}>

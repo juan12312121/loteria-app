@@ -19,7 +19,7 @@ export function SinRonda({ sala }: ContextoSala) {
         <Vacio>Esperando a que el anfitrión abra la ronda…</Vacio>
       )}
       <Tarjeta titulo={`Jugadores (${sala.jugadores.length})`}>
-        <ListaJugadores jugadores={sala.jugadores} />
+        <ListaJugadores jugadores={sala.jugadores} alQuitarBot={sala.esAnfitrion ? (id) => void sala.bots.quitar.ejecutar(id) : undefined} />
       </Tarjeta>
     </ScrollView>
   );

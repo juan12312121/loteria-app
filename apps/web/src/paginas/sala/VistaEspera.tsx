@@ -1,4 +1,4 @@
-import { Check } from 'lucide-react';
+import { Bot, Check } from 'lucide-react';
 import { dataUriDeCarta, MAX_TABLAS_POR_JUGADOR, useSesion, type Tabla } from '@loteria/core';
 import { Chip, Tarjeta } from '../../componentes/ui/basicos';
 import { Boton } from '../../componentes/ui/Boton';
@@ -94,8 +94,32 @@ export function VistaEspera({ sala, ronda }: ContextoSala) {
       </Tarjeta>
 
       <div className="pila">
-        <Tarjeta titulo={`Jugadores (${sala.jugadores.length})`}>
-          <ListaJugadores jugadores={sala.jugadores} detalle={(j) => `${tablasDe(j.id)} tabla(s)`} />
+        <Tarjeta titulo={`Jugadores (${sala.jugadores.length}/${datosSala.max_jugadores})`}>
+          <ListaJugadores
+            jugadores={sala.jugadores}
+            detalle={(j) => `${tablasDe(j.id)} tabla(s)`}
+            alQuitarBot={sala.esAnfitrion ? (id) => void sala.bots.quitar.ejecutar(id) : undefined}
+          />
+          {sala.esAnfitrion && (
+            <div style={{ marginTop: 10 }}>
+              <Boton
+                variante="secundario"
+                tamano="s"
+                icono={<Bot size={16} />}
+                onClick={() => sala.bots.agregar.ejecutar()}
+                cargando={sala.bots.agregar.cargando}
+                disabled={sala.jugadores.length >= datosSala.max_jugadores}
+              >
+                Agregar bot
+              </Boton>
+              <p className="texto-suave" style={{ margin: '6px 0 0' }}>
+                ¿Faltan jugadores? Los bots eligen sus tablas y el tablero los revisa igual que a todos.
+              </p>
+              {(sala.bots.agregar.error || sala.bots.quitar.error) && (
+                <p style={{ color: 'var(--rojo)', fontWeight: 700, margin: '6px 0 0' }}>{sala.bots.agregar.error ?? sala.bots.quitar.error}</p>
+              )}
+            </div>
+          )}
         </Tarjeta>
         {sala.esAnfitrion ? (
           <>

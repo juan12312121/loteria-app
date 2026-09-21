@@ -1,0 +1,80 @@
+.chat {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+.boton {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  border: 3px solid var(--tinta);
+  background: var(--rosa);
+  color: var(--blanco);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: 0 4px 0 var(--sombra);
+}
+.boton:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 var(--sombra);
+}
+.frases {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px;
+  background: var(--papel);
+  border: 2px solid var(--tinta);
+  border-radius: 14px;
+  box-shadow: 0 4px 0 var(--sombra);
+  animation: subir 0.15s ease-out;
+}
+.frase {
+  border: 1.5px solid var(--tinta);
+  border-radius: 999px;
+  background: var(--amarillo-suave);
+  color: inherit;
+  padding: 6px 14px;
+  font-weight: 800;
+  cursor: pointer;
+  text-align: left;
+}
+.frase:hover:not(:disabled) {
+  background: var(--amarillo);
+  color: #1C1A17;
+}
+.frase:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+.burbujas {
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+  max-width: min(80vw, 360px);
+}
+.burbuja {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px 8px 8px;
+  background: var(--papel);
+  border: 2px solid var(--tinta);
+  border-radius: 18px 18px 18px 4px;
+  box-shadow: 0 3px 0 var(--sombra);
+  animation: subir 0.2s ease-out;
+}
+@keyframes subir {
+  from { transform: translateY(10px) scale(0.95); }
+}

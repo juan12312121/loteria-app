@@ -24,10 +24,9 @@ export function useTienda(tipo: TipoSkin) {
   return { skins: catalogo.data ?? [], cargando: catalogo.cargando, error: catalogo.error, canjear, equipar };
 }
 
-/** Tabla de líderes y bitácora de puntos del jugador. */
-export function usePerfilJuego() {
+/** Cuántas skins tengo de cada tipo (álbum de colección). */
+export function useColeccion() {
   const { api } = useServicios();
-  const ranking = useConsulta(() => api.puntos.ranking(10), [api]);
-  const historial = useConsulta(() => api.puntos.mios(), [api]);
-  return { ranking: ranking.data ?? [], historial: historial.data ?? [], cargando: ranking.cargando || historial.cargando };
+  const coleccion = useConsulta(() => api.skins.coleccion(), [api]);
+  return { coleccion: coleccion.data ?? [], recargar: coleccion.recargar };
 }

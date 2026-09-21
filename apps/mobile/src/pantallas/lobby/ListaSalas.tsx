@@ -16,7 +16,7 @@ interface Props<T extends Sala> {
   alEntrar: (sala: T) => void;
 }
 
-export function ListaSalas<T extends Sala & { jugadores?: number }>({ consulta, vacio, alEntrar }: Props<T>) {
+export function ListaSalas<T extends Sala & { jugadores?: number; anfitrion?: string }>({ consulta, vacio, alEntrar }: Props<T>) {
   if (consulta.cargando && !consulta.data) return <Cargando />;
   if (consulta.error) return <MensajeError mensaje={consulta.error} alReintentar={consulta.recargar} />;
   if (!consulta.data?.length) return <Vacio>{vacio}</Vacio>;
@@ -28,8 +28,8 @@ export function ListaSalas<T extends Sala & { jugadores?: number }>({ consulta, 
           <View style={{ flex: 1, gap: 2 }}>
             <Text style={comunes.negrita}>{sala.nombre}</Text>
             <Text style={comunes.textoSuave}>
-              Código {sala.codigo}
-              {sala.jugadores !== undefined ? ` · ${sala.jugadores} jugadores` : ''}
+              {sala.anfitrion ? `De ${sala.anfitrion}` : `Código ${sala.codigo}`}
+              {sala.jugadores !== undefined ? ` · ${sala.jugadores}/${sala.max_jugadores} jugadores` : ''}
             </Text>
             <Chip tono={ESTADO[sala.estado].tono}>{ESTADO[sala.estado].texto}</Chip>
           </View>

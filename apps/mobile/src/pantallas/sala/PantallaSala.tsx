@@ -1,6 +1,10 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { Stack } from 'expo-router';
-import { useCartas, usePartida, useSala } from '@loteria/core';
+import { SvgXml } from 'react-native-svg';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { svgDeFondo, useCartas, useChatSala, useConexion, usePartida, useSala, useSesion } from '@loteria/core';
+import { BurbujasChat, ChatRapido } from '../../componentes/juego/ChatRapido';
+import { usePreferencias } from '../../preferencias';
 import { Cargando, Chip, MensajeError } from '../../componentes/ui/basicos';
 import { colores, comunes, espacio } from '../../tema';
 import { VistaEspera } from './VistaEspera';
@@ -11,9 +15,14 @@ import { AvisosDeRonda } from './AvisosDeRonda';
 
 /** Una sala = un espacio de juego. La vista cambia sola con el estado de la ronda. */
 export function PantallaSala({ salaId }: { salaId: string }) {
+  const { perfil } = useSesion();
+  const { autoMarcar } = usePreferencias();
   const sala = useSala(salaId);
-  const ronda = usePartida(sala.partida?.id ?? null);
+  const ronda = usePartida(sala.partida?.id ?? null, { autoMarcar });
   const { porId, cartas } = useCartas();
+  const chat = useChatSala(salaId, sala.jugadores);
+  const conexion = useConexion();
+  const abajo = useSafeAreaInsets().bottom;
 
   if (sala.cargando && !sala.sala) return <Cargando texto="Entrando a la sala…" />;
   if (!sala.sala) return <MensajeError mensaje={sala.error ?? 'No encontramos la sala'} />;
@@ -21,9 +30,20 @@ export function PantallaSala({ salaId }: { salaId: string }) {
   const estado = (ronda.estado?.partida.id === sala.partida?.id ? ronda.estado?.partida.estado : undefined) ?? sala.partida?.estado;
   const contexto = { sala, ronda, porId, cartas };
 
+  const enRonda = estado === 'cantando' || estado === 'pausada';
+
   return (
     <View style={comunes.pantalla}>
+      {/* Fondo de sala que el jugador trae equipado */}
+      <View style={StyleSheet.absoluteFill} pointerEvents="none">
+        <SvgXml xml={svgDeFondo(perfil?.equipo.fondo?.clave)} width="100%" height="100%" />
+      </View>
       <Stack.Screen options={{ title: sala.sala.nombre }} />
+      {conexion === 'reconectando' && (
+        <View style={estilos.sinConexion}>
+          <Text style={comunes.negrita}>📡 Se fue la conexión… reconectando. Tus marcas están guardadas.</Text>
+        </View>
+      )}
       <View style={estilos.barra}>
         {sala.partida && <Chip tono="anil">{`Ronda ${sala.partida.numero}`}</Chip>}
         {sala.figuraFinal && <Chip tono="rosa">{`Gana: ${sala.figuraFinal.nombre}`}</Chip>}
@@ -39,10 +59,14 @@ export function PantallaSala({ salaId }: { salaId: string }) {
         <VistaResultado {...contexto} />
       )}
       <AvisosDeRonda avisos={ronda.avisos.items} />
+      <BurbujasChat burbujas={chat.burbujas} />
+      {/* En la ronda el marcador de abajo ocupa espacio: el botón sube */}
+      <ChatRapido alEnviar={chat.enviar} abajo={abajo + (enRonda ? 110 : 0)} />
     </View>
   );
 }
 
 const estilos = StyleSheet.create({
+  sinConexion: { backgroundColor: colores.amarillo, paddingHorizontal: espacio.l, paddingVertical: espacio.s, borderBottomWidth: 2, borderBottomColor: colores.tinta },
   barra: { flexDirection: 'row', alignItems: 'center', gap: espacio.s, paddingHorizontal: espacio.l, paddingVertical: espacio.s, borderBottomWidth: 2, borderBottomColor: colores.tinta, backgroundColor: colores.papel },
 });
