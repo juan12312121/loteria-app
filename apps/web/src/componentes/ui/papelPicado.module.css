@@ -1,0 +1,34 @@
+.guirnalda {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  pointer-events: none;
+}
+.defs {
+  position: absolute;
+}
+.cordon {
+  position: absolute;
+  top: 6px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--tinta);
+  opacity: 0.55;
+}
+.fila {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  padding-top: 6px;
+}
+.banderita {
+  flex-shrink: 0;
+  transform-origin: top center;
+  animation: mecer 3.2s ease-in-out infinite;
+  filter: drop-shadow(0 2px 0 rgb(0 0 0 / 0.12));
+}
+@keyframes mecer {
+  0%, 100% { transform: rotate(-3deg); }
+  50% { transform: rotate(3deg); }
+}

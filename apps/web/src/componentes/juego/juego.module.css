@@ -1,0 +1,279 @@
+/* ---------- Carta ---------- */
+.carta {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  aspect-ratio: 3 / 4;
+  border: 2px solid var(--marco);
+  border-radius: 6px;
+  background: var(--fondo);
+  color: var(--texto);
+  padding: 3px;
+  overflow: hidden;
+  user-select: none;
+}
+.cartaInterior {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--marco);
+  border-radius: 3px;
+  min-height: 0;
+}
+.cartaNumero {
+  font-weight: 900;
+  line-height: 1;
+  padding: 2px 3px 0;
+}
+.cartaDibujo {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  min-height: 0;
+  line-height: 1;
+}
+.cartaDibujo img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+.cartaNombre {
+  font-family: var(--f-titulo);
+  font-weight: 900;
+  text-align: center;
+  text-transform: uppercase;
+  border-top: 1px solid var(--marco);
+  padding: 1px 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.apagada {
+  filter: grayscale(1);
+  opacity: 0.45;
+}
+.mini .cartaNumero { font-size: 0.55rem; }
+.mini .cartaDibujo { font-size: 0.95rem; }
+.mini .cartaNombre { display: none; }
+.chica .cartaNumero { font-size: 0.65rem; }
+.chica .cartaDibujo { font-size: 1.6rem; }
+.chica .cartaNombre { font-size: 0.5rem; }
+.mediana .cartaNumero { font-size: 0.85rem; }
+.mediana .cartaDibujo { font-size: 2.4rem; }
+.mediana .cartaNombre { font-size: 0.7rem; }
+.grande .cartaNumero { font-size: 1.8rem; padding: 6px 8px 0; }
+.grande .cartaDibujo { font-size: 6rem; }
+.grande .cartaNombre { font-size: 1.3rem; padding: 6px; letter-spacing: 0.08em; }
+.grande { border-width: 3px; padding: 6px; border-radius: 10px; }
+
+/* ---------- Ficha ---------- */
+.ficha {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 58%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  border: 3px solid;
+  color: var(--blanco);
+  font-weight: 900;
+  box-shadow: 0 3px 0 rgb(0 0 0 / 0.3), inset 0 -4px 0 rgb(0 0 0 / 0.15);
+  animation: caer 0.18s ease-out;
+  pointer-events: none;
+}
+@keyframes caer {
+  from { transform: scale(1.4); opacity: 0; }
+}
+
+/* ---------- Tabla ---------- */
+.tabla {
+  background: var(--papel);
+  border: 3px solid var(--tinta);
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.tablaEncabezado {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  font-weight: 900;
+  color: var(--anil);
+}
+.rejilla {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+}
+.casilla {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  border-radius: 7px;
+}
+.casilla:disabled {
+  cursor: default;
+}
+.casillaPorMarcar .carta {
+  box-shadow: 0 0 0 2px var(--verde);
+}
+.casillaDestacada .carta {
+  box-shadow: 0 0 0 3px var(--amarillo);
+}
+
+/* ---------- Cantor ---------- */
+.cantor {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.verso {
+  font-family: var(--f-titulo);
+  font-style: italic;
+  text-align: center;
+  background: var(--crema);
+  border: 1.5px dashed var(--gris);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+.barra {
+  height: 8px;
+  border: 1.5px solid var(--tinta);
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--blanco);
+}
+.barraRelleno {
+  height: 100%;
+  background: var(--rosa);
+  transform-origin: left;
+  animation-name: vaciar;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+@keyframes vaciar {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0); }
+}
+.fila5 {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+}
+
+/* ---------- Tablero del cantor (54) ---------- */
+.tablero {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  gap: 3px;
+}
+
+/* ---------- Mini figura ---------- */
+.miniFigura {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+  width: 44px;
+  flex-shrink: 0;
+}
+.miniCasilla {
+  aspect-ratio: 1;
+  border-radius: 2px;
+  background: var(--gris-claro);
+}
+.miniActiva {
+  background: var(--rosa);
+}
+
+/* ---------- Marcador de tabla llena ---------- */
+.marcador {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 18px;
+  border: 3px solid var(--tinta);
+  border-radius: 16px;
+  background: var(--papel);
+  box-shadow: 0 5px 0 var(--tinta);
+  font-size: 1.05rem;
+}
+.marcadorUrgente {
+  background: var(--amarillo-suave);
+  animation: latir 1s ease-in-out infinite;
+}
+@keyframes latir {
+  50% { transform: scale(1.015); }
+}
+.marcadorNumero {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 3px solid var(--tinta);
+  background: var(--rosa);
+  color: var(--blanco);
+  font-family: var(--f-titulo);
+  font-weight: 900;
+  font-size: 2rem;
+}
+.marcadorNota {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--tinta-suave);
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+/* ---------- Código de sala ---------- */
+.codigo {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+}
+.letra {
+  width: 44px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--tinta);
+  border-radius: 8px;
+  background: var(--blanco);
+  font-family: var(--f-titulo);
+  font-size: 1.8rem;
+  font-weight: 900;
+  box-shadow: 0 3px 0 var(--tinta);
+}
+
+/* ---------- Jugadores ---------- */
+.jugador {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--gris-claro);
+}
+.jugador:last-child {
+  border-bottom: 0;
+}
+.jugadorNombre {
+  flex: 1;
+  font-weight: 800;
+  min-width: 0;
+}
+.jugadorDetalle {
+  font-size: 0.8rem;
+  color: var(--tinta-suave);
+  font-weight: 600;
+}

@@ -1,0 +1,21 @@
+{
+  "name": "loteria-app",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Frontend de Lotería: web (React) y móvil (React Native) con lógica compartida",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "web": "npm run dev -w @loteria/web",
+    "mobile": "npm run start -w @loteria/mobile",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm test -w @loteria/core",
+    "build:web": "npm run build -w @loteria/web"
+  },
+  "overrides": {
+    "react": "19.2.3",
+    "react-dom": "19.2.3"
+  }
+}
