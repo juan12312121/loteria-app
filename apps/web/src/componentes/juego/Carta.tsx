@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import { aparienciaCarta, dataUriDeCarta, dataUriDeFicha, type Carta as TipoCarta } from '@loteria/core';
+import { aparienciaCarta, dataUriDeCarta, dataUriDeMarcoCarta, dataUriDeFicha, type Carta as TipoCarta } from '@loteria/core';
 import s from './juego.module.css';
 
 export type TamanoCarta = 'mini' | 'chica' | 'mediana' | 'grande';
@@ -16,9 +16,19 @@ interface Props {
 /** Carta de lotería con marco impreso, número, dibujo y nombre. */
 export function Carta({ carta, tamano = 'chica', apagada = false, skin }: Props) {
   const a = aparienciaCarta(skin);
-  const estilo = { '--fondo': a.fondo, '--marco': a.marco, '--texto': a.texto } as CSSProperties;
+  const marco = dataUriDeMarcoCarta(skin);
+  const estilo = {
+    '--fondo': a.fondo,
+    '--marco': a.marco,
+    '--texto': a.texto,
+    ...(marco && { backgroundImage: `url("${marco}")` }),
+  } as CSSProperties;
   return (
-    <div className={`${s.carta} ${s[tamano]} ${apagada ? s.apagada : ''}`} style={estilo} title={carta.nombre}>
+    <div
+      className={`${s.carta} ${s[tamano]} ${marco ? s.conPatron : ''} ${apagada ? s.apagada : ''}`}
+      style={estilo}
+      title={carta.nombre}
+    >
       <div className={s.cartaInterior}>
         <span className={s.cartaNumero}>{carta.id}</span>
         <span className={s.cartaDibujo}>

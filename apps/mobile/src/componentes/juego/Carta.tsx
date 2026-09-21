@@ -1,6 +1,6 @@
 import { Image, StyleSheet, Text, View } from 'react-native';
 import { SvgXml } from 'react-native-svg';
-import { aparienciaCarta, svgDeCarta, svgDeFicha, type Carta as TipoCarta } from '@loteria/core';
+import { aparienciaCarta, svgDeCarta, svgDeMarcoCarta, svgDeFicha, type Carta as TipoCarta } from '@loteria/core';
 import { fuentes } from '../../tema';
 
 export type TamanoCarta = 'mini' | 'chica' | 'mediana' | 'grande';
@@ -22,13 +22,23 @@ interface Props {
 /** Carta de lotería con marco impreso, número, dibujo y nombre. */
 export function Carta({ carta, tamano = 'chica', apagada = false, skin }: Props) {
   const a = aparienciaCarta(skin);
+  const marco = svgDeMarcoCarta(skin);
   const m = MEDIDAS[tamano];
   return (
     <View
-      style={[estilos.carta, { backgroundColor: a.fondo, borderColor: a.marco, padding: m.relleno, borderWidth: m.borde }, apagada && estilos.apagada]}
+      style={[
+        estilos.carta,
+        { backgroundColor: a.fondo, borderColor: a.marco, padding: marco ? '7%' : m.relleno, borderWidth: m.borde },
+        apagada && estilos.apagada,
+      ]}
       accessibilityLabel={carta.nombre}
     >
-      <View style={[estilos.interior, { borderColor: a.marco }]}>
+      {marco && (
+        <View style={StyleSheet.absoluteFill} pointerEvents="none">
+          <SvgXml xml={marco} width="100%" height="100%" preserveAspectRatio="xMidYMid slice" />
+        </View>
+      )}
+      <View style={[estilos.interior, { borderColor: a.marco, backgroundColor: a.fondo }]}>
         <Text style={[estilos.numero, { fontSize: m.numero, color: a.texto }]}>{carta.id}</Text>
         <View style={estilos.dibujo}>
           {carta.imagen_url ? (

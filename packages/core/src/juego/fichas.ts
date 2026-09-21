@@ -1,6 +1,7 @@
 /**
  * Ilustraciones propias de las fichas (skins de frijolito) en SVG, viewBox 100×100
  * con fondo transparente: se ponen encima de la carta marcada.
+ * Incluye objetos tradicionales y animales nacionales de México.
  */
 
 const TINTA = '#1C1A17';
@@ -75,6 +76,87 @@ const FICHAS: Record<string, string> = {
     c(50, 50, 31, '#F7C948', 'stroke="#9C7A00" stroke-width="2.5"') +
     `<text x="50" y="63" font-family="Georgia, serif" font-size="36" font-weight="900" text-anchor="middle" fill="#9C7A00" stroke="none">$</text>` +
     brillo('M26 38 Q32 24 46 20'),
+
+  // ---------- animales nacionales ----------
+  ajolote:
+    p('M27 42 Q10 32 13 20 Q21 28 30 36', '#E4557F') +
+    p('M24 52 Q5 52 5 39 Q15 45 26 47', '#E4557F') +
+    p('M27 62 Q10 71 7 60 Q18 60 29 57', '#E4557F') +
+    p('M73 42 Q90 32 87 20 Q79 28 70 36', '#E4557F') +
+    p('M76 52 Q95 52 95 39 Q85 45 74 47', '#E4557F') +
+    p('M73 62 Q90 71 93 60 Q82 60 71 57', '#E4557F') +
+    e(50, 53, 28, 24, '#F7A8C4') +
+    c(38, 48, 3.8, TINTA) + c(62, 48, 3.8, TINTA) +
+    c(39.2, 46.8, 1.2, '#FFFFFF', sinTrazo) + c(63.2, 46.8, 1.2, '#FFFFFF', sinTrazo) +
+    p('M40 61 Q50 69 60 61', 'none') +
+    c(33, 58, 3.2, '#F07DA3', sinTrazo) + c(67, 58, 3.2, '#F07DA3', sinTrazo),
+
+  colibri:
+    p('M32 60 L12 71 L17 59 L8 54 L30 56Z', '#067038') +
+    p('M43 51 Q38 21 59 15 Q57 36 51 53Z', '#7FB8FF', 'fill-opacity="0.85"') +
+    p('M30 58 Q40 40 60 44 Q71 48 67 58 Q58 71 40 69Z', '#0B8A4A') +
+    p('M58 50 Q67 52 65 59 Q58 59 55 54Z', '#E4007C') +
+    c(62, 44, 8, '#0B8A4A') +
+    p('M69 42 L93 36 L70 46.5Z', TINTA) +
+    c(63.5, 42.5, 1.8, TINTA, sinTrazo),
+
+  mariposa_monarca:
+    p('M50 50 Q30 18 13 27 Q8 46 30 53 Q41 55 50 50Z', '#F26A1B') +
+    p('M50 50 Q70 18 87 27 Q92 46 70 53 Q59 55 50 50Z', '#F26A1B') +
+    p('M50 53 Q30 56 24 72 Q34 85 46 71 Q50 63 50 53Z', '#F26A1B') +
+    p('M50 53 Q70 56 76 72 Q66 85 54 71 Q50 63 50 53Z', '#F26A1B') +
+    p('M48 48 L22 32 M46 50 L16 44 M48 56 L30 70 M52 48 L78 32 M54 50 L84 44 M52 56 L70 70', 'none', 'stroke-width="2"') +
+    c(16, 30, 1.8, '#FFFFFF', sinTrazo) + c(12, 40, 1.8, '#FFFFFF', sinTrazo) + c(84, 30, 1.8, '#FFFFFF', sinTrazo) + c(88, 40, 1.8, '#FFFFFF', sinTrazo) +
+    e(50, 54, 3.2, 17, TINTA) +
+    p('M50 38 Q44 26 39 23 M50 38 Q56 26 61 23', 'none'),
+
+  tortuga:
+    p('M31 42 Q13 31 11 46 Q22 50 33 49Z', '#40916C') +
+    p('M69 42 Q87 31 89 46 Q78 50 67 49Z', '#40916C') +
+    p('M35 72 Q24 82 30 88 Q36 84 40 76Z', '#40916C') +
+    p('M65 72 Q76 82 70 88 Q64 84 60 76Z', '#40916C') +
+    c(50, 20, 8.5, '#40916C') + c(47, 18, 1.5, TINTA, sinTrazo) + c(53, 18, 1.5, TINTA, sinTrazo) +
+    e(50, 55, 25, 29, '#2D6A4F') +
+    p('M50 32 L60 42 L56 56 L44 56 L40 42Z M40 42 L28 46 M60 42 L72 46 M44 56 L36 72 M56 56 L64 72 M50 32 L50 26', 'none', 'stroke="#95D5B2" stroke-width="2"'),
+
+  xolo:
+    p('M31 42 L21 11 L44 31Z', '#56606B') +
+    p('M69 42 L79 11 L56 31Z', '#56606B') +
+    p('M30 36 Q50 25 70 36 Q77 56 64 73 Q50 85 36 73 Q23 56 30 36Z', '#6B7480') +
+    p('M44 31 Q47 20 50 29 Q53 20 56 31', 'none') +
+    c(41, 50, 3.4, TINTA) + c(59, 50, 3.4, TINTA) +
+    c(42, 49, 1, '#FFFFFF', sinTrazo) + c(60, 49, 1, '#FFFFFF', sinTrazo) +
+    e(50, 64, 5.5, 4, TINTA) +
+    p('M50 68 L50 72 M44 74 Q50 78 56 74', 'none'),
+
+  jaguar:
+    c(28, 27, 9.5, '#F2A93B') + c(72, 27, 9.5, '#F2A93B') +
+    c(28, 27, 4, TINTA, sinTrazo) + c(72, 27, 4, TINTA, sinTrazo) +
+    c(50, 55, 32, '#F2A93B') +
+    c(33, 40, 3, 'none', 'stroke-width="2.5"') + c(50, 32, 3, 'none', 'stroke-width="2.5"') + c(67, 40, 3, 'none', 'stroke-width="2.5"') +
+    c(26, 58, 2.5, TINTA, sinTrazo) + c(74, 58, 2.5, TINTA, sinTrazo) + c(42, 30, 1.8, TINTA, sinTrazo) + c(58, 30, 1.8, TINTA, sinTrazo) +
+    e(50, 68, 15, 12, '#FFF6E5') +
+    e(38, 51, 4.5, 5.5, '#F7B500') + e(62, 51, 4.5, 5.5, '#F7B500') +
+    e(38, 51, 1.4, 4, TINTA, sinTrazo) + e(62, 51, 1.4, 4, TINTA, sinTrazo) +
+    p('M44 60 L56 60 L50 67Z', TINTA) +
+    p('M50 67 L50 72 M43 74 Q50 79 57 74', 'none'),
+
+  quetzal:
+    p('M41 66 Q31 84 13 95 M45 68 Q42 86 31 97', 'none', 'stroke="#0B8A4A" stroke-width="6"') +
+    p('M41 66 Q31 84 13 95 M45 68 Q42 86 31 97', 'none', 'stroke-width="1.2"') +
+    p('M36 60 Q34 36 52 30 Q68 28 70 42 Q72 58 58 68 Q46 74 36 60Z', '#0B8A4A') +
+    p('M52 50 Q66 50 64 62 Q56 69 48 62Z', '#D7263D') +
+    p('M52 31 Q55 17 65 23 Q60 28 58 33Z', '#0B8A4A') +
+    p('M68 38 L79 40.5 L68 44Z', '#F7B500') +
+    c(62, 38, 2, TINTA, sinTrazo) +
+    p('M40 48 Q44 58 52 60', 'none', 'stroke="#067038" stroke-width="2"'),
+
+  aguila:
+    p('M24 76 Q18 42 42 26 Q62 14 76 30 Q85 43 71 50 L61 53 Q58 66 65 80Z', '#7A4B2A') +
+    p('M31 46 Q40 30 58 27', 'none', 'stroke="#E0B100" stroke-width="4"') +
+    p('M70 33 Q90 35 88 51 Q82 46 72 48Z', '#F7B500') +
+    c(62, 36, 4, '#F7B500') + c(62, 36, 1.8, TINTA, sinTrazo) +
+    p('M40 58 Q46 62 52 60 M36 66 Q44 70 52 68', 'none', 'stroke="#B97A45" stroke-width="2"'),
 };
 
 const FICHA_POR_DEFECTO = 'frijol';

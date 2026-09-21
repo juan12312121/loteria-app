@@ -13,7 +13,14 @@
   overflow: hidden;
   user-select: none;
 }
+/* Skin con patrón dibujado: el marco se engrosa para que se vea el mosaico */
+.carta.conPatron {
+  background-size: cover;
+  background-position: center;
+  padding: 7%;
+}
 .cartaInterior {
+  background: var(--fondo);
   flex: 1;
   display: flex;
   flex-direction: column;
