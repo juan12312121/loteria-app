@@ -45,7 +45,7 @@ export function VistaEspera({ sala, ronda }: ContextoSala) {
               <MiniFigura mascara={f.mascaras[0]} />
               <div>
                 <b>Se anuncia: {f.nombre}</b>
-                <div className="texto-suave">+{f.puntos} pts al primero · la ronda sigue</div>
+                <div className="texto-suave">+{f.puntos} pts · solo la gana el primero, después ya nadie más</div>
               </div>
             </div>
           ))}

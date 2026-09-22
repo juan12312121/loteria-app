@@ -10,7 +10,7 @@ export function AvisosDeRonda({ avisos }: { avisos: ElementoCola<AvisoRonda>[] }
       {avisos.map(({ id, valor: { evento, mio } }) => (
         <View key={id} style={estilos.aviso}>
           <Text style={estilos.texto}>
-            {`${evento.primero ? '🥇' : '🎉'} ${mio ? 'Hiciste' : `${evento.nombre} hizo`} ¡${evento.figura.nombre}!${evento.puntos > 0 ? ` +${evento.puntos} pts` : ''} · Sigue la ronda`}
+            {`${evento.primero ? '🥇' : '🎉'} ${mio ? 'Hiciste' : `${evento.nombre} hizo`} ¡${evento.figura.nombre}!${evento.puntos > 0 ? ` +${evento.puntos} pts` : ''} · Ya nadie más puede hacerla`}
           </Text>
         </View>
       ))}

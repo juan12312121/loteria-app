@@ -41,7 +41,7 @@ export function VistaEspera({ sala, ronda }: ContextoSala) {
           <View key={f.id} style={estilos.regla}>
             <MiniFigura mascara={f.mascaras[0]} />
             <Text style={[comunes.texto, { flex: 1 }]}>
-              Se anuncia: <Text style={comunes.negrita}>{f.nombre}</Text> · +{f.puntos} pts al primero
+              Se anuncia: <Text style={comunes.negrita}>{f.nombre}</Text> · +{f.puntos} pts · solo el primero la gana
             </Text>
           </View>
         ))}

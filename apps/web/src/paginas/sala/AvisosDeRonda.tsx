@@ -8,7 +8,7 @@ export function AvisosDeRonda({ avisos }: { avisos: ElementoCola<AvisoRonda>[] }
       {avisos.map(({ id, valor: { evento, mio } }) => (
         <Aviso key={id} icono={evento.primero ? '🥇' : '🎉'}>
           {mio ? 'Hiciste' : `${evento.nombre} hizo`} <b>¡{evento.figura.nombre}!</b>
-          {evento.puntos > 0 && ` +${evento.puntos} pts`} · La ronda sigue hasta tabla llena
+          {evento.puntos > 0 && ` +${evento.puntos} pts`} · Ya nadie más puede hacerla; sigue la ronda hasta tabla llena
         </Aviso>
       ))}
     </Avisos>

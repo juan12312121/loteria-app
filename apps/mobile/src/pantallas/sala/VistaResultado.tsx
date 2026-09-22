@@ -80,7 +80,7 @@ export function VistaResultado({ sala, ronda, porId }: ContextoSala) {
           estado.logros.map((l) => (
             <Text key={`${l.partida_tabla_id}-${l.clave}`} style={[comunes.texto, { marginBottom: 4 }]}>
               Carta {l.carta} · <Text style={comunes.negrita}>{l.nombre}</Text> · {l.figura}
-              {l.puntos > 0 ? ` · primero +${l.puntos}` : ''}
+              {l.puntos > 0 ? ` · +${l.puntos}` : ''}
             </Text>
           ))
         ) : (

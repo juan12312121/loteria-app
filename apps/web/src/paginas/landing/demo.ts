@@ -43,6 +43,6 @@ export const listaCartasDemo = [...cartasDemo.values()];
 /** Figuras explicadas en la landing (mismas máscaras que el servidor). */
 export const FIGURAS_LANDING = [
   { clave: 'llena', nombre: 'Tabla llena', mascara: 0xffff, texto: 'Las 16 casillas. Es la única que termina la ronda.', premio: 'Pozo + 100 pts', gana: true },
-  { clave: 'esquinas', nombre: 'Cuatro esquinas', mascara: 0x9009, texto: 'Las cuatro puntas. Se anuncia a toda la sala.', premio: '+25 pts al primero', gana: false },
-  { clave: 'marco', nombre: 'La O', mascara: 0xf99f, texto: 'Todo el borde: las 12 casillas de afuera.', premio: '+70 pts al primero', gana: false },
+  { clave: 'esquinas', nombre: 'Cuatro esquinas', mascara: 0x9009, texto: 'Las cuatro puntas. Se anuncia a toda la sala.', premio: '+25 pts, solo al primero', gana: false },
+  { clave: 'marco', nombre: 'La O', mascara: 0xf99f, texto: 'Todo el borde: las 12 casillas de afuera.', premio: '+70 pts, solo al primero', gana: false },
 ];

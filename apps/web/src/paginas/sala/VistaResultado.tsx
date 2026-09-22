@@ -87,7 +87,7 @@ export function VistaResultado({ sala, ronda, porId }: ContextoSala) {
                 {estado.logros.map((l) => (
                   <li key={`${l.partida_tabla_id}-${l.clave}`} className={s.avisoRonda}>
                     Carta {l.carta} · <b>{l.nombre}</b> · {l.figura}
-                    {l.puntos > 0 && ` · primero +${l.puntos}`}
+                    {l.puntos > 0 && ` · +${l.puntos}`}
                   </li>
                 ))}
               </ul>
