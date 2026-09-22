@@ -44,7 +44,8 @@ export const coloresNoche: Record<NombreColor, string> = {
   rosaOscuro: '#E4007C',
   amarillo: '#FFC23D',
   amarilloSuave: '#4A3B14',
-  anil: '#8FB0FF',
+  // Sirve de enlace sobre morado y de fondo con texto blanco a la vez
+  anil: '#5A8BFF',
   verde: '#2FC774',
   verdeSuave: '#173B2B',
   rojo: '#FF5C6E',
@@ -79,6 +80,35 @@ export const fuentes = {
   titulo: 'Playfair Display',
   cuerpo: 'Nunito Sans',
 } as const;
+
+/** Paleta a partir de una lista en el orden de las claves de `colores`. */
+const paleta = (valores: string[]) =>
+  Object.fromEntries((Object.keys(colores) as NombreColor[]).map((k, i) => [k, valores[i]])) as Record<NombreColor, string>;
+
+export interface TemaColor {
+  oscuro: boolean;
+  colores: Record<NombreColor, string>;
+}
+
+/**
+ * Temas de la app (skins tipo "tema"). Solo cambian fondo, tarjetas, texto y
+ * dos acentos; las cartas y fichas se quedan igual. Todos pasan la revisión de
+ * contraste de temas.test.ts (texto ≥ 4.5:1, botones ≥ 3:1).
+ */
+export const TEMAS: Record<string, TemaColor> = {
+  tema_clasico: { oscuro: false, colores: { ...colores } },
+  tema_noche: { oscuro: true, colores: coloresNoche },
+  //                crema      papel      tinta      tintaSuave gris       grisClaro  rosa       rosaOscuro amarillo   amarSuave  anil       verde      verdeSuave rojo       naranja    blanco     superficie sombra
+  tema_talavera: { oscuro: false, colores: paleta(['#EEF3FB', '#FFFFFF', '#13294B', '#4A5B78', '#8292AE', '#D9E2F0', '#1F4E9C', '#163A75', '#F2A93B', '#FDF0D8', '#2A64B8', '#0B7F45', '#DDF3E6', '#C8283E', '#D9701C', '#FFFFFF', '#FFFFFF', '#13294B']) },
+  tema_barro: { oscuro: false, colores: paleta(['#F6E9DC', '#FFF8F1', '#3A2418', '#6A4F40', '#A08878', '#E8D5C4', '#A84A25', '#8E3E1F', '#D9A441', '#F6E6C4', '#136A6D', '#3A7548', '#E1EEDF', '#B3261E', '#C8672E', '#FFFFFF', '#FFFDFB', '#3A2418']) },
+  tema_mercado: { oscuro: false, colores: paleta(['#FFF0F6', '#FFFFFF', '#2A1020', '#6B4659', '#9C8492', '#F4D9E6', '#D1006F', '#A30057', '#E8B400', '#FFF3C4', '#0B7A43', '#0B7F45', '#DCF5E6', '#D7263D', '#F26A1B', '#FFFFFF', '#FFFFFF', '#2A1020']) },
+  tema_jade: { oscuro: false, colores: paleta(['#EAF4EF', '#F9FCFA', '#0F2A20', '#41604E', '#7F9A8B', '#D3E6DB', '#177E5A', '#0F5E42', '#C99700', '#F6EDC8', '#1B6A87', '#1A7D44', '#D7F0E0', '#B83232', '#C8621A', '#FFFFFF', '#FFFFFF', '#0F2A20']) },
+  tema_lucha: { oscuro: true, colores: paleta(['#141A2E', '#1E2640', '#EEF2FF', '#AEB8D6', '#7F8AAD', '#333D5C', '#FF4757', '#E0283A', '#FFC23D', '#3D3414', '#5A8BFF', '#2FC774', '#173B2B', '#FF6B7A', '#FF8A3D', '#FFFFFF', '#182038', '#05070F']) },
+  tema_cempasuchil: { oscuro: false, colores: paleta(['#FFF1E0', '#FFFAF3', '#2E1A0C', '#6B4A33', '#9A8270', '#F1DCC4', '#C2410C', '#9A3412', '#F59E0B', '#FDE8C4', '#6D28D9', '#15803D', '#DCF3E3', '#B91C1C', '#EA580C', '#FFFFFF', '#FFFFFF', '#2E1A0C']) },
+};
+
+export const TEMA_POR_DEFECTO = 'tema_clasico';
+export const temaDe = (clave?: string | null): TemaColor => TEMAS[clave ?? ''] ?? TEMAS[TEMA_POR_DEFECTO];
 
 export const tema = { colores, coloresNoche, coloresRareza, papelPicado, espacio, radio, fuentes } as const;
 export type Tema = typeof tema;

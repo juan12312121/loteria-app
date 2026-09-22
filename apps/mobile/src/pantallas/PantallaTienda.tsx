@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import {
-  coloresRareza, nombresRareza, svgDeAvatar, svgDeFondo, useColeccion, useSesion, useTienda, type Skin, type TipoSkin,
+  coloresRareza, nombresRareza, svgDeAvatar, svgDeFondo, temaDe, useColeccion, useSesion, useTienda, type Skin, type TipoSkin,
 } from '@loteria/core';
 import { Avance, Cargando, Chip, MensajeError, Pestanas } from '../componentes/ui/basicos';
 import { Boton } from '../componentes/ui/Boton';
@@ -15,6 +15,7 @@ const TIPOS: { valor: TipoSkin; etiqueta: string }[] = [
   { valor: 'carta', etiqueta: 'Cartas' },
   { valor: 'avatar', etiqueta: 'Avatares' },
   { valor: 'fondo', etiqueta: 'Fondos' },
+  { valor: 'tema', etiqueta: 'Temas' },
 ];
 const MESES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
 const fecha = (mmdd: string) => `${Number(mmdd.slice(3))} ${MESES[Number(mmdd.slice(0, 2)) - 1]}`;
@@ -36,6 +37,7 @@ export function PantallaTienda() {
         <Chip tono="amarillo">{`⭐ ${puntos} pts`}</Chip>
       </View>
       <Text style={comunes.textoSuave}>Gana puntos jugando, con la recompensa diaria y con misiones. Las exclusivas se ganan.</Text>
+      {tipo === 'tema' && <Text style={comunes.textoSuave}>Los temas de colores se ven en la versión web; en el celular llegan pronto.</Text>}
       {total > 0 && (
         <View style={{ gap: 4 }}>
           <Text style={comunes.negrita}>{`Álbum: ${tengo} de ${total}`}</Text>
@@ -86,6 +88,17 @@ function Muestra({ skin }: { skin: Skin }) {
           <SvgXml xml={svgDeFondo(skin.clave)} width="100%" height="100%" />
         </View>
       );
+    case 'tema': {
+      const c = temaDe(skin.clave).colores;
+      return (
+        <View style={[estilos.fondo, { backgroundColor: c.crema, padding: 6 }]}>
+          <View style={{ flex: 1, backgroundColor: c.papel, borderColor: c.tinta, borderWidth: 1.5, borderRadius: 6, padding: 4, justifyContent: 'space-between' }}>
+            <View style={{ height: 5, width: '60%', backgroundColor: c.anil, borderRadius: 3 }} />
+            <View style={{ height: 12, width: 34, backgroundColor: c.rosa, borderRadius: 4 }} />
+          </View>
+        </View>
+      );
+    }
   }
 }
 

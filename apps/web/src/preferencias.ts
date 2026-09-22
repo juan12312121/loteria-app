@@ -4,11 +4,10 @@ import { useSyncExternalStore } from 'react';
 export interface Preferencias {
   sonido: boolean;
   autoMarcar: boolean;
-  tema: 'claro' | 'noche';
 }
 
 const CLAVE = 'loteria.preferencias';
-const INICIALES: Preferencias = { sonido: true, autoMarcar: false, tema: 'claro' };
+const INICIALES: Preferencias = { sonido: true, autoMarcar: false };
 
 function leer(): Preferencias {
   try {

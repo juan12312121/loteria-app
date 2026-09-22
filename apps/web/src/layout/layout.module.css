@@ -94,6 +94,16 @@
   box-shadow: 0 4px 0 var(--sombra);
   z-index: 30;
 }
+.enlaceMenu {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  font-weight: 800;
+  text-decoration: none;
+  color: var(--anil);
+  white-space: nowrap;
+}
 .sinConexion {
   position: sticky;
   top: 64px;

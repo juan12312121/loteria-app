@@ -1,4 +1,4 @@
-import { tema, type Almacen } from '@loteria/core';
+import { tema, TEMAS, type Almacen } from '@loteria/core';
 
 /** Sesión en localStorage (si el navegador lo bloquea, la app sigue sin recordar la sesión). */
 export const almacenWeb: Almacen = {
@@ -34,7 +34,7 @@ const variables = (colores: Record<string, string>) =>
 
 /**
  * Publica los tokens del tema compartido como variables CSS (--rosa, --f-titulo…).
- * El modo "noche de feria" se activa con data-tema="noche" en <html>.
+ * Cada tema de la tienda se activa con data-tema="<clave>" en <html>.
  */
 export function aplicarTema(documento: Document) {
   const rareza = Object.entries(tema.coloresRareza)
@@ -45,6 +45,8 @@ export function aplicarTema(documento: Document) {
   estilo.id = 'tema-loteria';
   estilo.textContent =
     `:root{${variables(tema.colores)}${rareza}${fuentes}color-scheme:light;}` +
-    `:root[data-tema="noche"]{${variables(tema.coloresNoche)}color-scheme:dark;}`;
+    Object.entries(TEMAS)
+      .map(([clave, t]) => `:root[data-tema="${clave}"]{${variables(t.colores)}color-scheme:${t.oscuro ? 'dark' : 'light'};}`)
+      .join('');
   documento.head.appendChild(estilo);
 }

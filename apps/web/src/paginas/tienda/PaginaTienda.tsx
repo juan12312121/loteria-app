@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Star } from 'lucide-react';
 import { useColeccion, useSesion, useTienda, type TipoSkin } from '@loteria/core';
 import { Avance, Cargando, Chip, MensajeError, Pestanas } from '../../componentes/ui/basicos';
@@ -11,11 +12,14 @@ const TIPOS: { valor: TipoSkin; etiqueta: string }[] = [
   { valor: 'carta', etiqueta: 'Cartas' },
   { valor: 'avatar', etiqueta: 'Avatares' },
   { valor: 'fondo', etiqueta: 'Fondos de sala' },
+  { valor: 'tema', etiqueta: 'Temas' },
 ];
 
 export function PaginaTienda() {
   const { perfil } = useSesion();
-  const [tipo, setTipo] = useState<TipoSkin>('ficha');
+  const [parametros] = useSearchParams();
+  const inicial = TIPOS.find((t) => t.valor === parametros.get('tipo'))?.valor ?? 'ficha';
+  const [tipo, setTipo] = useState<TipoSkin>(inicial);
   const tienda = useTienda(tipo);
   const { coleccion, recargar: recargarColeccion } = useColeccion();
   const error = tienda.canjear.error ?? tienda.equipar.error;

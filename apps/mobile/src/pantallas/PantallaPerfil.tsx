@@ -18,7 +18,7 @@ const ETIQUETAS: Record<MovimientoPuntos['tipo'], string> = {
   mision: 'Misión',
   ranking: 'Ranking semanal',
 };
-const NOMBRES_TIPO: Record<TipoSkin, string> = { ficha: 'Fichas', carta: 'Cartas', avatar: 'Avatares', fondo: 'Fondos' };
+const NOMBRES_TIPO: Record<TipoSkin, string> = { ficha: 'Fichas', carta: 'Cartas', avatar: 'Avatares', fondo: 'Fondos', tema: 'Temas' };
 const MEDALLAS = ['🥇', '🥈', '🥉'];
 
 type Seccion = 'perfil' | 'ranking';

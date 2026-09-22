@@ -18,7 +18,7 @@ const ETIQUETAS: Record<MovimientoPuntos['tipo'], string> = {
   ranking: 'Ranking semanal',
 };
 
-const NOMBRES_TIPO: Record<TipoSkin, string> = { ficha: 'Fichas', carta: 'Cartas', avatar: 'Avatares', fondo: 'Fondos' };
+const NOMBRES_TIPO: Record<TipoSkin, string> = { ficha: 'Fichas', carta: 'Cartas', avatar: 'Avatares', fondo: 'Fondos', tema: 'Temas' };
 
 const formatoFecha = new Intl.DateTimeFormat('es-MX', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
 
@@ -47,7 +47,7 @@ export function PaginaPerfil() {
             <div className="texto-suave">
               Ficha: <b>{sesion.equipo.ficha?.nombre ?? 'Frijolito'}</b> · Cartas: <b>{sesion.equipo.carta?.nombre ?? 'Clásica'}</b>
               <br />
-              Fondo: <b>{sesion.equipo.fondo?.nombre ?? 'Feria'}</b>
+              Fondo: <b>{sesion.equipo.fondo?.nombre ?? 'Feria'}</b> · Tema: <b>{sesion.equipo.tema?.nombre ?? 'Clásico'}</b>
             </div>
             <Link to="/tienda">Cambiar en la tienda</Link>
           </div>

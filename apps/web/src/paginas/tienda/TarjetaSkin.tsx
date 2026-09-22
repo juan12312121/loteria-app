@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react';
 import { CalendarDays, Lock } from 'lucide-react';
-import { coloresRareza, dataUriDeAvatar, dataUriDeFondo, nombresRareza, type Skin } from '@loteria/core';
+import { coloresRareza, dataUriDeAvatar, dataUriDeFondo, nombresRareza, temaDe, type Skin } from '@loteria/core';
 import { Chip } from '../../componentes/ui/basicos';
 import { Boton } from '../../componentes/ui/Boton';
 import { Carta, Ficha } from '../../componentes/juego/Carta';
@@ -37,7 +37,27 @@ function Muestra({ skin }: { skin: Skin }) {
       return <img className={s.muestraAvatar} src={dataUriDeAvatar(skin.clave)} alt="" />;
     case 'fondo':
       return <div className={s.muestraFondo} style={{ backgroundImage: `url("${dataUriDeFondo(skin.clave)}")` }} />;
+    case 'tema':
+      return <MuestraTema clave={skin.clave} />;
   }
+}
+
+/** Mini pantalla con los colores del tema: fondo, tarjeta, texto, botón y acentos. */
+function MuestraTema({ clave }: { clave: string }) {
+  const c = temaDe(clave).colores;
+  return (
+    <div className={s.muestraTema} style={{ background: c.crema, borderColor: c.tinta }} aria-hidden>
+      <div className={s.muestraTemaTarjeta} style={{ background: c.papel, borderColor: c.tinta, color: c.tinta }}>
+        <b style={{ color: c.anil }}>MISIONES</b>
+        <span style={{ color: c.tintaSuave }}>Juega 3 partidas</span>
+        <span className={s.muestraTemaBoton} style={{ background: c.rosa, color: c.blanco, borderColor: c.tinta }}>
+          Cobrar
+        </span>
+      </div>
+      <span className={s.muestraTemaPunto} style={{ background: c.amarillo }} />
+      <span className={s.muestraTemaPunto} style={{ background: c.verde }} />
+    </div>
+  );
 }
 
 /** Una skin con su muestra, rareza y la acción que corresponde (canjear, equipar o equipada). */

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import { dataUriDeFondo, useCartas, useChatSala, useEventoSala, usePartida, useSala, useSesion } from '@loteria/core';
+import { dataUriDeFondo, temaDe, useCartas, useChatSala, useEventoSala, usePartida, useSala, useSesion } from '@loteria/core';
 import { Cargando, Chip, MensajeError } from '../../componentes/ui/basicos';
 import { BurbujasChat, ChatRapido } from '../../componentes/juego/ChatRapido';
 import { usePreferencias } from '../../preferencias';
@@ -20,7 +20,7 @@ import s from '../paginas.module.css';
 export function PaginaSala() {
   const { salaId = '' } = useParams();
   const { perfil } = useSesion();
-  const { autoMarcar, tema } = usePreferencias();
+  const { autoMarcar } = usePreferencias();
   const sala = useSala(salaId);
   const ronda = usePartida(sala.partida?.id ?? null, { autoMarcar });
   const { porId, cartas } = useCartas();
@@ -32,7 +32,7 @@ export function PaginaSala() {
   useEventoSala('partida:ganadores', (e) => e.ganadores.length > 0 && sonidos.loteria());
   useEventoSala('sala:frase', (e) => e.usuarioId !== perfil?.id && sonidos.frase());
 
-  useFondoDeSala(perfil?.equipo.fondo?.clave, tema === 'noche');
+  useFondoDeSala(perfil?.equipo.fondo?.clave, perfil?.equipo.tema?.clave);
 
   if (sala.cargando && !sala.sala) return <Cargando texto="Entrando a la sala…" />;
   if (!sala.sala) return <MensajeError mensaje={sala.error ?? 'No encontramos la sala'} />;
@@ -77,16 +77,18 @@ export function PaginaSala() {
 }
 
 /** Pone detrás de la sala el fondo que el jugador trae equipado (y lo quita al salir). */
-function useFondoDeSala(clave: string | undefined, noche: boolean) {
+function useFondoDeSala(clave: string | undefined, claveTema: string | undefined) {
   useEffect(() => {
     const cuerpo = document.body.style;
     const mosaico = `url("${dataUriDeFondo(clave)}")`;
-    // De noche se oscurece con un velo para que no deslumbre
-    cuerpo.backgroundImage = noche ? `linear-gradient(rgb(27 21 48 / 0.88), rgb(27 21 48 / 0.88)), ${mosaico}` : mosaico;
+    // Con un tema oscuro el mosaico claro se cubre con un velo del color del tema para que no deslumbre
+    const { oscuro, colores } = temaDe(claveTema);
+    const velo = `${colores.crema}E0`;
+    cuerpo.backgroundImage = oscuro ? `linear-gradient(${velo}, ${velo}), ${mosaico}` : mosaico;
     cuerpo.backgroundAttachment = 'fixed';
     return () => {
       cuerpo.backgroundImage = '';
       cuerpo.backgroundAttachment = '';
     };
-  }, [clave, noche]);
+  }, [clave, claveTema]);
 }

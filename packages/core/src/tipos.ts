@@ -1,7 +1,7 @@
 /** Tipos del dominio, espejo de lo que devuelve la API de Lotería. */
 
 export type Rol = 'jugador' | 'admin' | 'bot';
-export const TIPOS_SKIN = ['ficha', 'carta', 'avatar', 'fondo'] as const;
+export const TIPOS_SKIN = ['ficha', 'carta', 'avatar', 'fondo', 'tema'] as const;
 export type TipoSkin = (typeof TIPOS_SKIN)[number];
 export type Rareza = 'comun' | 'rara' | 'epica' | 'legendaria';
 export type ModoCantor = 'automatico' | 'manual';

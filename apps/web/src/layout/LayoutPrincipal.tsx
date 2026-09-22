@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { Coins, LogOut, Moon, Settings, Star, Volume2, WifiOff } from 'lucide-react';
-import { useConexion, useProgreso, useSesion } from '@loteria/core';
+import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Coins, LogOut, Palette, Settings, Star, Volume2, WifiOff } from 'lucide-react';
+import { TEMA_POR_DEFECTO, useConexion, useProgreso, useSesion } from '@loteria/core';
 import { Avatar, Chip, Interruptor, PapelPicado } from '../componentes/ui/basicos';
 import { cambiarPreferencia, usePreferencias } from '../preferencias';
 import s from './layout.module.css';
@@ -19,10 +19,10 @@ export function LayoutPrincipal() {
   const { perfil, salir } = useSesion();
   const navegar = useNavigate();
   const conexion = useConexion();
-  const { tema } = usePreferencias();
+  const tema = perfil?.equipo.tema?.clave ?? TEMA_POR_DEFECTO;
   const porCobrar = usePorCobrar(perfil?.puntos);
 
-  // El modo noche solo aplica dentro del juego (la landing se queda clara)
+  // El tema equipado solo aplica dentro del juego (la landing se queda clásica)
   useEffect(() => {
     document.documentElement.dataset.tema = tema;
     return () => {
@@ -97,10 +97,10 @@ function usePorCobrar(puntos: number | undefined) {
   return porCobrar;
 }
 
-/** Sonido y modo noche (se guardan en este navegador). */
+/** Sonido (se guarda en este navegador) y atajo a los temas de la tienda. */
 function MenuAjustes() {
   const [abierto, setAbierto] = useState(false);
-  const { sonido, tema } = usePreferencias();
+  const { sonido } = usePreferencias();
   const caja = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -135,15 +135,9 @@ function MenuAjustes() {
             activo={sonido}
             alCambiar={(v) => cambiarPreferencia('sonido', v)}
           />
-          <Interruptor
-            etiqueta={
-              <>
-                <Moon size={16} /> Noche de feria
-              </>
-            }
-            activo={tema === 'noche'}
-            alCambiar={(v) => cambiarPreferencia('tema', v ? 'noche' : 'claro')}
-          />
+          <Link to="/tienda?tipo=tema" className={s.enlaceMenu} onClick={() => setAbierto(false)}>
+            <Palette size={16} /> Cambiar tema de colores
+          </Link>
         </div>
       )}
     </div>
