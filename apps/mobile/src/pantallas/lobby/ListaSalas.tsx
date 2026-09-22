@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import type { Consulta, Sala } from '@loteria/core';
 import { Cargando, Chip, MensajeError, Vacio } from '../../componentes/ui/basicos';
 import { Boton } from '../../componentes/ui/Boton';
-import { colores, comunes, radio } from '../../tema';
+import { radio, type Colores, useComunes, useEstilos } from '../../tema';
 
 const ESTADO = {
   abierta: { tono: 'amarillo', texto: 'Esperando' },
@@ -17,6 +17,8 @@ interface Props<T extends Sala> {
 }
 
 export function ListaSalas<T extends Sala & { jugadores?: number; anfitrion?: string }>({ consulta, vacio, alEntrar }: Props<T>) {
+  const comunes = useComunes();
+  const estilos = useEstilos(crearEstilos);
   if (consulta.cargando && !consulta.data) return <Cargando />;
   if (consulta.error) return <MensajeError mensaje={consulta.error} alReintentar={consulta.recargar} />;
   if (!consulta.data?.length) return <Vacio>{vacio}</Vacio>;
@@ -42,6 +44,7 @@ export function ListaSalas<T extends Sala & { jugadores?: number; anfitrion?: st
   );
 }
 
-const estilos = StyleSheet.create({
+const crearEstilos = (colores: Colores) =>
+  StyleSheet.create({
   fila: { flexDirection: 'row', alignItems: 'center', gap: 10, padding: 10, borderWidth: 1.5, borderColor: colores.tinta, borderRadius: radio.m, backgroundColor: colores.blanco },
 });

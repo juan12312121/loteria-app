@@ -2,10 +2,11 @@ import { ScrollView } from 'react-native';
 import { Tarjeta, Vacio } from '../../componentes/ui/basicos';
 import { Boton } from '../../componentes/ui/Boton';
 import { CodigoSala, ListaJugadores } from '../../componentes/juego/Sala';
-import { comunes } from '../../tema';
+import { useComunes } from '../../tema';
 import type { ContextoSala } from './tipos';
 
 export function SinRonda({ sala }: ContextoSala) {
+  const comunes = useComunes();
   return (
     <ScrollView contentContainerStyle={comunes.contenido}>
       <Tarjeta titulo="Invita a jugar">

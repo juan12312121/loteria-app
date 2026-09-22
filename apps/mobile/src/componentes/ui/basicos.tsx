@@ -2,21 +2,23 @@ import type { ReactNode } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Switch, Text, TextInput, View, type TextInputProps } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import { papelPicado, svgDeAvatar } from '@loteria/core';
-import { colores, comunes, espacio, fuentes, radio } from '../../tema';
+import { espacio, fuentes, radio, type Colores, useColores, useComunes, useEstilos } from '../../tema';
 import { Boton } from './Boton';
 
 // ---------- Chip ----------
 type Tono = 'amarillo' | 'verde' | 'rosa' | 'anil' | 'neutro';
-const TONOS: Record<Tono, { fondo: string; texto: string; borde: string }> = {
+const tonosDe = (colores: Colores): Record<Tono, { fondo: string; texto: string; borde: string }> => ({
   amarillo: { fondo: colores.amarilloSuave, texto: colores.tinta, borde: colores.tinta },
   verde: { fondo: colores.verdeSuave, texto: colores.verde, borde: colores.verde },
   rosa: { fondo: colores.rosa, texto: colores.blanco, borde: colores.tinta },
   anil: { fondo: colores.anil, texto: colores.blanco, borde: colores.tinta },
   neutro: { fondo: colores.papel, texto: colores.tinta, borde: colores.tinta },
-};
+});
 
 export function Chip({ tono = 'neutro', children }: { tono?: Tono; children: ReactNode }) {
-  const t = TONOS[tono];
+  const colores = useColores();
+  const estilos = useEstilos(crearEstilos);
+  const t = tonosDe(colores)[tono];
   return (
     <View style={[estilos.chip, { backgroundColor: t.fondo, borderColor: t.borde }]}>
       <Text style={[estilos.chipTexto, { color: t.texto }]}>{children}</Text>
@@ -26,6 +28,8 @@ export function Chip({ tono = 'neutro', children }: { tono?: Tono; children: Rea
 
 // ---------- Tarjeta ----------
 export function Tarjeta({ titulo, acciones, children }: { titulo?: string; acciones?: ReactNode; children: ReactNode }) {
+  const comunes = useComunes();
+  const estilos = useEstilos(crearEstilos);
   return (
     <View style={estilos.tarjeta}>
       {(titulo || acciones) && (
@@ -41,6 +45,9 @@ export function Tarjeta({ titulo, acciones, children }: { titulo?: string; accio
 
 // ---------- Campo ----------
 export function Campo({ etiqueta, error, style, ...resto }: TextInputProps & { etiqueta: string; error?: string | null }) {
+  const colores = useColores();
+  const comunes = useComunes();
+  const estilos = useEstilos(crearEstilos);
   return (
     <View style={{ gap: 4 }}>
       <Text style={estilos.etiqueta}>{etiqueta}</Text>
@@ -62,6 +69,8 @@ interface AvatarProps {
 }
 
 export function Avatar({ nombre, clave, tamano = 36, conectado }: AvatarProps) {
+  const colores = useColores();
+  const estilos = useEstilos(crearEstilos);
   const punto = conectado !== undefined && (
     <View style={[estilos.punto, { backgroundColor: conectado ? colores.verde : colores.gris, width: tamano * 0.3, height: tamano * 0.3, borderRadius: tamano }]} />
   );
@@ -82,6 +91,8 @@ export function Avatar({ nombre, clave, tamano = 36, conectado }: AvatarProps) {
 
 // ---------- Interruptor ----------
 export function Interruptor({ etiqueta, activo, alCambiar }: { etiqueta: string; activo: boolean; alCambiar: (v: boolean) => void }) {
+  const colores = useColores();
+  const comunes = useComunes();
   return (
     <View style={[comunes.fila, { flexWrap: 'nowrap' }]}>
       <Switch value={activo} onValueChange={alCambiar} trackColor={{ true: colores.verde, false: colores.grisClaro }} thumbColor={colores.blanco} accessibilityLabel={etiqueta} />
@@ -92,6 +103,8 @@ export function Interruptor({ etiqueta, activo, alCambiar }: { etiqueta: string;
 
 // ---------- Barra de avance ----------
 export function Avance({ valor, total, tono = 'rosa' }: { valor: number; total: number; tono?: 'rosa' | 'verde' | 'amarillo' }) {
+  const colores = useColores();
+  const estilos = useEstilos(crearEstilos);
   const pct = total ? Math.min(100, Math.round((valor / total) * 100)) : 0;
   return (
     <View style={estilos.avance} accessibilityRole="progressbar" accessibilityValue={{ now: valor, min: 0, max: total }}>
@@ -102,6 +115,7 @@ export function Avance({ valor, total, tono = 'rosa' }: { valor: number; total: 
 
 // ---------- Papel picado ----------
 export function PapelPicado({ banderitas = 14 }: { banderitas?: number }) {
+  const estilos = useEstilos(crearEstilos);
   return (
     <View style={estilos.papelPicado} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
       {Array.from({ length: banderitas }, (_, i) => (
@@ -113,6 +127,9 @@ export function PapelPicado({ banderitas = 14 }: { banderitas?: number }) {
 
 // ---------- Estados ----------
 export function Cargando({ texto = 'Barajando…' }: { texto?: string }) {
+  const colores = useColores();
+  const comunes = useComunes();
+  const estilos = useEstilos(crearEstilos);
   return (
     <View style={estilos.estado}>
       <ActivityIndicator color={colores.rosa} size="large" />
@@ -122,6 +139,8 @@ export function Cargando({ texto = 'Barajando…' }: { texto?: string }) {
 }
 
 export function MensajeError({ mensaje, alReintentar }: { mensaje: string; alReintentar?: () => void }) {
+  const comunes = useComunes();
+  const estilos = useEstilos(crearEstilos);
   return (
     <View style={estilos.estado}>
       <Text style={[comunes.error, { textAlign: 'center' }]}>{mensaje}</Text>
@@ -135,6 +154,8 @@ export function MensajeError({ mensaje, alReintentar }: { mensaje: string; alRei
 }
 
 export function Vacio({ children }: { children: ReactNode }) {
+  const comunes = useComunes();
+  const estilos = useEstilos(crearEstilos);
   return (
     <View style={estilos.estado}>
       {typeof children === 'string' ? <Text style={[comunes.textoSuave, { textAlign: 'center' }]}>{children}</Text> : children}
@@ -144,6 +165,8 @@ export function Vacio({ children }: { children: ReactNode }) {
 
 // ---------- Pestañas ----------
 export function Pestanas<T extends string>({ opciones, valor, alCambiar }: { opciones: { valor: T; etiqueta: string }[]; valor: T; alCambiar: (v: T) => void }) {
+  const colores = useColores();
+  const estilos = useEstilos(crearEstilos);
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ flexGrow: 0 }}>
     <View style={estilos.pestanas} accessibilityRole="tablist">
@@ -160,7 +183,8 @@ export function Pestanas<T extends string>({ opciones, valor, alCambiar }: { opc
   );
 }
 
-const estilos = StyleSheet.create({
+const crearEstilos = (colores: Colores) =>
+  StyleSheet.create({
   chip: { borderWidth: 1.5, borderRadius: radio.total, paddingHorizontal: 10, paddingVertical: 3, alignSelf: 'flex-start' },
   chipTexto: { fontFamily: fuentes.cuerpoNegra, fontSize: 12 },
   tarjeta: { backgroundColor: colores.papel, borderWidth: 2, borderColor: colores.tinta, borderRadius: radio.l, padding: espacio.l },

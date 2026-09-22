@@ -29,7 +29,15 @@
     "plugins": [
       "expo-router",
       "expo-secure-store",
-      "expo-font"
-    ]
+      "expo-font",
+      "expo-audio"
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "26238826-7755-49a7-9bf9-cd464ca620a3"
+      }
+    },
+    "owner": "juantrino12345"
   }
 }

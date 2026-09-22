@@ -4,3 +4,6 @@
  * o la URL pública del servidor.
  */
 export const API_URL = process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:3000';
+
+/** Web pública: los enlaces de invitación abren ahí y entran directo a la sala. */
+export const WEB_URL = process.env.EXPO_PUBLIC_WEB_URL ?? 'https://web-phi-three-89.vercel.app';

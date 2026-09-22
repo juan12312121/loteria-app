@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
-import { colores, fuentes, radio } from '../../tema';
+import { fuentes, radio, type Colores, useColores, useEstilos } from '../../tema';
 
 type Variante = 'primario' | 'secundario' | 'exito' | 'peligro' | 'fantasma';
 
@@ -15,26 +15,30 @@ interface Props {
   anchoCompleto?: boolean;
 }
 
-const FONDO: Record<Variante, string> = {
+const fondoDe = (colores: Colores): Record<Variante, string> => ({
   primario: colores.rosa,
   secundario: colores.papel,
   exito: colores.verde,
   peligro: colores.rojo,
   fantasma: 'transparent',
-};
+});
 
-const TEXTO: Record<Variante, string> = {
+const textoDe = (colores: Colores): Record<Variante, string> => ({
   primario: colores.blanco,
   secundario: colores.tinta,
   exito: colores.blanco,
   peligro: colores.blanco,
   fantasma: colores.anil,
-};
+});
 
 const RELLENO = { s: 8, m: 12, l: 16 };
 const LETRA = { s: 13, m: 16, l: 19 };
 
 export function Boton({ children, alPresionar, variante = 'primario', tamano = 'm', cargando, deshabilitado, icono, anchoCompleto }: Props) {
+  const colores = useColores();
+  const estilos = useEstilos(crearEstilos);
+  const fondo = fondoDe(colores)[variante];
+  const texto = textoDe(colores)[variante];
   const inactivo = deshabilitado || cargando;
   const fantasma = variante === 'fantasma';
   return (
@@ -46,7 +50,7 @@ export function Boton({ children, alPresionar, variante = 'primario', tamano = '
       style={({ pressed }) => [
         estilos.base,
         {
-          backgroundColor: FONDO[variante],
+          backgroundColor: fondo,
           paddingVertical: RELLENO[tamano],
           borderColor: fantasma ? 'transparent' : colores.tinta,
           alignSelf: anchoCompleto ? 'stretch' : 'flex-start',
@@ -57,14 +61,15 @@ export function Boton({ children, alPresionar, variante = 'primario', tamano = '
       ]}
     >
       <View style={estilos.contenido}>
-        {cargando ? <ActivityIndicator color={TEXTO[variante]} size="small" /> : icono}
-        <Text style={[estilos.texto, { color: TEXTO[variante], fontSize: LETRA[tamano] }]}>{children}</Text>
+        {cargando ? <ActivityIndicator color={texto} size="small" /> : icono}
+        <Text style={[estilos.texto, { color: texto, fontSize: LETRA[tamano] }]}>{children}</Text>
       </View>
     </Pressable>
   );
 }
 
-const estilos = StyleSheet.create({
+const crearEstilos = (colores: Colores) =>
+  StyleSheet.create({
   base: { borderWidth: 2, borderRadius: radio.m, paddingHorizontal: 18 },
   sombra: { shadowColor: colores.tinta, shadowOffset: { width: 0, height: 3 }, shadowOpacity: 1, shadowRadius: 0, elevation: 3 },
   contenido: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 },

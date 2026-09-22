@@ -3,13 +3,15 @@ import { Switch, Text, View } from 'react-native';
 import type { Accion, ModoCantor, NuevaSala, Sala } from '@loteria/core';
 import { Campo, Pestanas } from '../../componentes/ui/basicos';
 import { Boton } from '../../componentes/ui/Boton';
-import { colores, comunes } from '../../tema';
+import { useColores, useComunes } from '../../tema';
 
 const VELOCIDADES = ['3000', '5000', '8000', '12000'] as const;
 type Velocidad = (typeof VELOCIDADES)[number];
 
 /** El anfitrión solo decide nombre, cantor y privacidad; costo y tablas son reglas del juego. */
 export function FormCrearSala({ accion, alCrear }: { accion: Accion<[NuevaSala], Sala>; alCrear: (sala: Sala) => void }) {
+  const colores = useColores();
+  const comunes = useComunes();
   const [nombre, setNombre] = useState('');
   const [modo, setModo] = useState<ModoCantor>('automatico');
   const [velocidad, setVelocidad] = useState<Velocidad>('5000');

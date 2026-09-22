@@ -1,7 +1,7 @@
 import { Image, StyleSheet, Text, View } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import { aparienciaCarta, svgDeCarta, svgDeMarcoCarta, svgDeFicha, type Carta as TipoCarta } from '@loteria/core';
-import { fuentes } from '../../tema';
+import { fuentes, type Colores, useEstilos } from '../../tema';
 
 export type TamanoCarta = 'mini' | 'chica' | 'mediana' | 'grande';
 
@@ -21,6 +21,7 @@ interface Props {
 
 /** Carta de lotería con marco impreso, número, dibujo y nombre. */
 export function Carta({ carta, tamano = 'chica', apagada = false, skin }: Props) {
+  const estilos = useEstilos(crearEstilos);
   const a = aparienciaCarta(skin);
   const marco = svgDeMarcoCarta(skin);
   const m = MEDIDAS[tamano];
@@ -59,6 +60,7 @@ export function Carta({ carta, tamano = 'chica', apagada = false, skin }: Props)
 
 /** Ficha (frijolito) con la skin del jugador, dibujada en SVG. */
 export function Ficha({ skin, tamano = 30 }: { skin?: string | null; tamano?: number }) {
+  const estilos = useEstilos(crearEstilos);
   return (
     <View style={[estilos.ficha, { width: tamano, height: tamano }]} pointerEvents="none">
       <SvgXml xml={svgDeFicha(skin)} width="100%" height="100%" />
@@ -66,7 +68,8 @@ export function Ficha({ skin, tamano = 30 }: { skin?: string | null; tamano?: nu
   );
 }
 
-const estilos = StyleSheet.create({
+const crearEstilos = (colores: Colores) =>
+  StyleSheet.create({
   carta: { width: '100%', aspectRatio: 3 / 4, borderRadius: 6, overflow: 'hidden' },
   apagada: { opacity: 0.3 },
   interior: { flex: 1, borderWidth: 1, borderRadius: 3 },

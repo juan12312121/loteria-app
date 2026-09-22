@@ -6,7 +6,7 @@ import { mensajeDeError, useSesion } from '@loteria/core';
 import { Campo, PapelPicado, Pestanas } from '../componentes/ui/basicos';
 import { Boton } from '../componentes/ui/Boton';
 import { Carta } from '../componentes/juego/Carta';
-import { comunes, espacio } from '../tema';
+import { espacio, useComunes } from '../tema';
 
 type Modo = 'entrar' | 'registro';
 
@@ -17,6 +17,7 @@ const ABANICO = [
 ];
 
 export function PantallaEntrar() {
+  const comunes = useComunes();
   const { entrar, registrarse } = useSesion();
   const [modo, setModo] = useState<Modo>('entrar');
   const [datos, setDatos] = useState({ nombre: '', correo: '', password: '' });

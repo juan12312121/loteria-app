@@ -8,7 +8,7 @@ import { LoteriaProvider } from '@loteria/core';
 import { API_URL } from '../config';
 import { almacenMovil } from '../plataforma';
 import { Cargando } from '../componentes/ui/basicos';
-import { colores, fuentes } from '../tema';
+import { fuentes, ProveedorTema, useColores, useTemaOscuro } from '../tema';
 
 export default function RaizLayout() {
   const [fuentesListas] = useFonts({
@@ -24,20 +24,33 @@ export default function RaizLayout() {
   return (
     <SafeAreaProvider>
       <LoteriaProvider apiUrl={API_URL} almacen={almacenMovil}>
-        <StatusBar style="dark" />
-        <Stack
-          screenOptions={{
-            headerStyle: { backgroundColor: colores.papel },
-            headerTitleStyle: { fontFamily: fuentes.titulo, color: colores.tinta },
-            headerTintColor: colores.rosa,
-            contentStyle: { backgroundColor: colores.crema },
-          }}
-        >
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="entrar" options={{ headerShown: false }} />
-          <Stack.Screen name="sala/[id]" options={{ title: 'Sala' }} />
-        </Stack>
+        <ProveedorTema>
+          <Navegacion />
+        </ProveedorTema>
       </LoteriaProvider>
     </SafeAreaProvider>
+  );
+}
+
+/** Pila de pantallas con los colores del tema equipado. */
+function Navegacion() {
+  const colores = useColores();
+  const oscuro = useTemaOscuro();
+  return (
+    <>
+      <StatusBar style={oscuro ? 'light' : 'dark'} />
+      <Stack
+        screenOptions={{
+          headerStyle: { backgroundColor: colores.papel },
+          headerTitleStyle: { fontFamily: fuentes.titulo, color: colores.tinta },
+          headerTintColor: colores.rosa,
+          contentStyle: { backgroundColor: colores.crema },
+        }}
+      >
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="entrar" options={{ headerShown: false }} />
+        <Stack.Screen name="sala/[id]" options={{ title: 'Sala' }} />
+      </Stack>
+    </>
   );
 }

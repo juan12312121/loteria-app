@@ -2,12 +2,13 @@ import { useEffect, useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { CLAVES_FRASE, FRASES, type BurbujaFrase, type ClaveFrase, type ElementoCola } from '@loteria/core';
 import { Avatar } from '../ui/basicos';
-import { colores, fuentes, radio } from '../../tema';
+import { fuentes, radio, type Colores, useEstilos } from '../../tema';
 
 const ESPERA_MS = 1500;
 
 /** Botón flotante con frases fijas (nada de texto libre). */
 export function ChatRapido({ alEnviar, abajo = 0 }: { alEnviar: (clave: ClaveFrase) => void; abajo?: number }) {
+  const estilos = useEstilos(crearEstilos);
   const [abierto, setAbierto] = useState(false);
   const [espera, setEspera] = useState(false);
   const temporizador = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -40,6 +41,7 @@ export function ChatRapido({ alEnviar, abajo = 0 }: { alEnviar: (clave: ClaveFra
 
 /** Globitos de lo que dicen los demás. */
 export function BurbujasChat({ burbujas, arriba = 60 }: { burbujas: ElementoCola<BurbujaFrase>[]; arriba?: number }) {
+  const estilos = useEstilos(crearEstilos);
   if (!burbujas.length) return null;
   return (
     <View style={[estilos.burbujas, { top: arriba }]} pointerEvents="none">
@@ -56,7 +58,8 @@ export function BurbujasChat({ burbujas, arriba = 60 }: { burbujas: ElementoCola
   );
 }
 
-const estilos = StyleSheet.create({
+const crearEstilos = (colores: Colores) =>
+  StyleSheet.create({
   chat: { position: 'absolute', right: 16, alignItems: 'flex-end', gap: 8 },
   boton: { width: 54, height: 54, borderRadius: 27, borderWidth: 3, borderColor: colores.tinta, backgroundColor: colores.rosa, alignItems: 'center', justifyContent: 'center', elevation: 6 },
   botonTexto: { fontSize: 24 },

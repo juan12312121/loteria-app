@@ -5,11 +5,13 @@ import { Chip, Tarjeta } from '../../componentes/ui/basicos';
 import { Boton } from '../../componentes/ui/Boton';
 import { MiniFigura } from '../../componentes/juego/Cantor';
 import { CodigoSala, ListaJugadores } from '../../componentes/juego/Sala';
-import { colores, comunes, radio } from '../../tema';
+import { radio, type Colores, useComunes, useEstilos } from '../../tema';
 import type { ContextoSala } from './tipos';
 
 /** Antes de iniciar: invitar, ver las reglas y elegir tablas. */
 export function VistaEspera({ sala, ronda }: ContextoSala) {
+  const comunes = useComunes();
+  const estilos = useEstilos(crearEstilos);
   const { perfil } = useSesion();
   const datosSala = sala.sala!;
   const misTablas = ronda.estado?.misTablas ?? [];
@@ -122,7 +124,8 @@ export function VistaEspera({ sala, ronda }: ContextoSala) {
   );
 }
 
-const estilos = StyleSheet.create({
+const crearEstilos = (colores: Colores) =>
+  StyleSheet.create({
   regla: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 6 },
   rejilla: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   opcion: { width: '48%', gap: 4, padding: 8, borderWidth: 2, borderColor: colores.tinta, borderRadius: radio.m, backgroundColor: colores.blanco },

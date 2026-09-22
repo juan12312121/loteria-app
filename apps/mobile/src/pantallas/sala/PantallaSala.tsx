@@ -2,11 +2,12 @@ import { StyleSheet, Text, View } from 'react-native';
 import { Stack } from 'expo-router';
 import { SvgXml } from 'react-native-svg';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { svgDeFondo, useCartas, useChatSala, useConexion, usePartida, useSala, useSesion } from '@loteria/core';
+import { svgDeFondo, useCartas, useChatSala, useConexion, useEventoSala, usePartida, useSala, useSesion } from '@loteria/core';
+import { sonidos } from '../../sonidos';
 import { BurbujasChat, ChatRapido } from '../../componentes/juego/ChatRapido';
 import { usePreferencias } from '../../preferencias';
 import { Cargando, Chip, MensajeError } from '../../componentes/ui/basicos';
-import { colores, comunes, espacio } from '../../tema';
+import { espacio, type Colores, useComunes, useEstilos } from '../../tema';
 import { VistaEspera } from './VistaEspera';
 import { VistaRonda } from './VistaRonda';
 import { VistaResultado } from './VistaResultado';
@@ -15,12 +16,19 @@ import { AvisosDeRonda } from './AvisosDeRonda';
 
 /** Una sala = un espacio de juego. La vista cambia sola con el estado de la ronda. */
 export function PantallaSala({ salaId }: { salaId: string }) {
+  const comunes = useComunes();
+  const estilos = useEstilos(crearEstilos);
   const { perfil } = useSesion();
   const { autoMarcar } = usePreferencias();
   const sala = useSala(salaId);
   const ronda = usePartida(sala.partida?.id ?? null, { autoMarcar });
   const { porId, cartas } = useCartas();
   const chat = useChatSala(salaId, sala.jugadores);
+
+  useEventoSala('carta:cantada', () => sonidos.carta());
+  useEventoSala('figura:lograda', () => sonidos.figura());
+  useEventoSala('partida:ganadores', (e) => e.ganadores.length > 0 && sonidos.loteria());
+  useEventoSala('sala:frase', (e) => e.usuarioId !== perfil?.id && sonidos.frase());
   const conexion = useConexion();
   const abajo = useSafeAreaInsets().bottom;
 
@@ -66,7 +74,8 @@ export function PantallaSala({ salaId }: { salaId: string }) {
   );
 }
 
-const estilos = StyleSheet.create({
+const crearEstilos = (colores: Colores) =>
+  StyleSheet.create({
   sinConexion: { backgroundColor: colores.amarillo, paddingHorizontal: espacio.l, paddingVertical: espacio.s, borderBottomWidth: 2, borderBottomColor: colores.tinta },
   barra: { flexDirection: 'row', alignItems: 'center', gap: espacio.s, paddingHorizontal: espacio.l, paddingVertical: espacio.s, borderBottomWidth: 2, borderBottomColor: colores.tinta, backgroundColor: colores.papel },
 });

@@ -2,12 +2,16 @@ import { StyleSheet, Text, View } from 'react-native';
 import { useProgreso, type Mision } from '@loteria/core';
 import { Avance, Chip, Tarjeta } from '../../componentes/ui/basicos';
 import { Boton } from '../../componentes/ui/Boton';
-import { colores, comunes, fuentes, radio } from '../../tema';
+import { sonidos } from '../../sonidos';
+import { fuentes, radio, type Colores, useColores, useComunes, useEstilos } from '../../tema';
 
 const PERIODOS: Record<Mision['periodo'], string> = { diaria: 'Hoy', semanal: 'Esta semana', siempre: 'Especiales' };
 
 /** Recompensa diaria y misiones con su avance. */
 export function PanelProgreso() {
+  const colores = useColores();
+  const comunes = useComunes();
+  const estilos = useEstilos(crearEstilos);
   const { diario, misiones, reclamarDiario, cobrarMision } = useProgreso();
   if (!diario) return null;
 
@@ -29,7 +33,7 @@ export function PanelProgreso() {
           })}
         </View>
         {diario.disponible ? (
-          <Boton anchoCompleto cargando={reclamarDiario.cargando} alPresionar={() => reclamarDiario.ejecutar()}>
+          <Boton anchoCompleto cargando={reclamarDiario.cargando} alPresionar={async () => (await reclamarDiario.ejecutar()) && sonidos.cobrar()}>
             {`Cobrar +${diario.puntos} pts`}
           </Boton>
         ) : (
@@ -55,7 +59,7 @@ export function PanelProgreso() {
                   {m.cobrada ? (
                     <Chip tono="verde">✓</Chip>
                   ) : m.completada ? (
-                    <Boton tamano="s" variante="exito" deshabilitado={cobrarMision.cargando} alPresionar={() => cobrarMision.ejecutar(m.clave)}>
+                    <Boton tamano="s" variante="exito" deshabilitado={cobrarMision.cargando} alPresionar={async () => (await cobrarMision.ejecutar(m.clave)) && sonidos.cobrar()}>
                       {`+${m.puntos}`}
                     </Boton>
                   ) : (
@@ -70,7 +74,8 @@ export function PanelProgreso() {
   );
 }
 
-const estilos = StyleSheet.create({
+const crearEstilos = (colores: Colores) =>
+  StyleSheet.create({
   dias: { flexDirection: 'row', gap: 4, marginBottom: 12 },
   dia: { flex: 1, alignItems: 'center', paddingVertical: 6, borderWidth: 2, borderColor: colores.grisClaro, borderRadius: radio.m, backgroundColor: colores.blanco },
   diaHecho: { borderColor: colores.verde, backgroundColor: colores.verdeSuave },

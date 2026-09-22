@@ -2,14 +2,17 @@ import { useState } from 'react';
 import { Linking, Pressable, Share, StyleSheet, Text, View } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
 import type { JugadorSala } from '@loteria/core';
-import { colores, comunes, fuentes, radio } from '../../tema';
+import { fuentes, radio, type Colores, useColores, useComunes, useEstilos } from '../../tema';
 import { Avatar, Chip } from '../ui/basicos';
+import { WEB_URL } from '../../config';
 import { Boton } from '../ui/Boton';
 
 /** Código de invitación en casillas, con copiar y compartir (WhatsApp u otra app). */
 export function CodigoSala({ codigo, nombreSala }: { codigo: string; nombreSala: string }) {
+  const comunes = useComunes();
+  const estilos = useEstilos(crearEstilos);
   const [copiado, setCopiado] = useState(false);
-  const texto = `¡Vente a jugar lotería a "${nombreSala}"! Entra con el código ${codigo}`;
+  const texto = `¡Vente a jugar lotería a "${nombreSala}"! Entra aquí: ${WEB_URL}/jugar?codigo=${codigo} (o en la app con el código ${codigo})`;
 
   const copiar = async () => {
     await Clipboard.setStringAsync(codigo);
@@ -53,6 +56,9 @@ interface ListaProps {
 
 /** Jugadores de la sala con su avatar y estado de conexión. */
 export function ListaJugadores({ jugadores, detalle, alQuitarBot }: ListaProps) {
+  const colores = useColores();
+  const comunes = useComunes();
+  const estilos = useEstilos(crearEstilos);
   return (
     <View>
       {jugadores.map((j, i) => (
@@ -75,7 +81,8 @@ export function ListaJugadores({ jugadores, detalle, alQuitarBot }: ListaProps) 
   );
 }
 
-const estilos = StyleSheet.create({
+const crearEstilos = (colores: Colores) =>
+  StyleSheet.create({
   codigo: { flexDirection: 'row', justifyContent: 'center', gap: 6 },
   letra: { width: 42, height: 52, borderWidth: 2, borderColor: colores.tinta, borderRadius: radio.m, backgroundColor: colores.blanco, alignItems: 'center', justifyContent: 'center' },
   letraTexto: { fontFamily: fuentes.titulo, fontSize: 26, color: colores.tinta },

@@ -1,7 +1,7 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { Animated, Easing, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { bitsDeMascara, TOTAL_CARTAS, type Carta as TipoCarta, type CartaCantada } from '@loteria/core';
-import { colores, comunes, fuentes, radio } from '../../tema';
+import { fuentes, radio, type Colores, useColores, useComunes, useEstilos } from '../../tema';
 import { Chip } from '../ui/basicos';
 import { Carta } from './Carta';
 
@@ -16,6 +16,8 @@ interface CantorProps {
 
 /** La carta que acaba de salir, su verso, el tiempo y las anteriores en una tira. */
 export function Cantor({ carta, ultimas, velocidadMs, ultimaCartaEn, pausada, skinCarta }: CantorProps) {
+  const comunes = useComunes();
+  const estilos = useEstilos(crearEstilos);
   if (!carta) return <Text style={comunes.textoSuave}>El cantor está por empezar… ¡Se va y se corre!</Text>;
   return (
     <View style={{ gap: 10 }}>
@@ -24,11 +26,11 @@ export function Cantor({ carta, ultimas, velocidadMs, ultimaCartaEn, pausada, sk
         <Chip tono="anil">{`Carta ${carta.orden} de ${TOTAL_CARTAS}`}</Chip>
       </View>
       <View style={estilos.fila}>
-        <View style={{ width: 150 }}>
+        <Volteo key={`carta-${carta.orden}`}>
           <Carta carta={carta} tamano="grande" skin={skinCarta} />
-        </View>
+        </Volteo>
         <View style={{ flex: 1, gap: 8 }}>
-          {carta.verso ? <Text style={estilos.verso}>«{carta.verso}»</Text> : null}
+          {carta.verso ? <Verso key={`verso-${carta.orden}`} texto={carta.verso} /> : null}
           {velocidadMs && !pausada ? <BarraTiempo duracionMs={velocidadMs} reinicio={ultimaCartaEn ?? carta.orden} /> : null}
           {pausada && <Chip tono="amarillo">En pausa</Chip>}
         </View>
@@ -46,9 +48,40 @@ export function Cantor({ carta, ultimas, velocidadMs, ultimaCartaEn, pausada, sk
   );
 }
 
+/** La carta nueva entra girando, como si el cantor la volteara. */
+function Volteo({ children }: { children: React.ReactNode }) {
+  const [giro] = useState(() => new Animated.Value(0));
+  useEffect(() => {
+    Animated.timing(giro, { toValue: 1, duration: 450, easing: Easing.out(Easing.back(1.4)), useNativeDriver: true }).start();
+  }, [giro]);
+  const rotateY = giro.interpolate({ inputRange: [0, 1], outputRange: ['90deg', '0deg'] });
+  const scale = giro.interpolate({ inputRange: [0, 1], outputRange: [0.85, 1] });
+  return <Animated.View style={{ width: 150, transform: [{ perspective: 800 }, { rotateY }, { scale }] }}>{children}</Animated.View>;
+}
+
+const MS_POR_LETRA = 28;
+
+/** El verso del cantor, letra por letra como si lo estuviera diciendo. */
+function Verso({ texto }: { texto: string }) {
+  const estilos = useEstilos(crearEstilos);
+  const [letras, setLetras] = useState(0);
+  useEffect(() => {
+    if (letras >= texto.length) return;
+    const t = setTimeout(() => setLetras((n) => n + 1), MS_POR_LETRA);
+    return () => clearTimeout(t);
+  }, [letras, texto.length]);
+  return (
+    <Text style={estilos.verso} accessibilityLabel={texto}>
+      «{texto.slice(0, letras)}
+      <Text style={{ opacity: 0 }}>{texto.slice(letras)}»</Text>
+    </Text>
+  );
+}
+
 /** Barra que se vacía hasta la siguiente carta. */
 function BarraTiempo({ duracionMs, reinicio }: { duracionMs: number; reinicio: number }) {
-  const avance = useRef(new Animated.Value(1)).current;
+  const estilos = useEstilos(crearEstilos);
+  const [avance] = useState(() => new Animated.Value(1));
   useEffect(() => {
     avance.setValue(1);
     const anim = Animated.timing(avance, { toValue: 0, duration: duracionMs, easing: Easing.linear, useNativeDriver: false });
@@ -83,6 +116,7 @@ export function TableroCantor({ cartas, cantadas }: { cartas: TipoCarta[]; canta
 
 /** Diagrama 4×4 de una figura. */
 export function MiniFigura({ mascara }: { mascara: number }) {
+  const colores = useColores();
   const bits = bitsDeMascara(mascara);
   return (
     <View style={{ width: 44, gap: 2 }}>
@@ -102,6 +136,9 @@ export function MiniFigura({ mascara }: { mascara: number }) {
  * tablero anuncia ¡Lotería! solo (lo decide el servidor, sin trampas).
  */
 export function MarcadorLlena({ faltan, tabla }: { faltan: number; tabla: string }) {
+  const colores = useColores();
+  const comunes = useComunes();
+  const estilos = useEstilos(crearEstilos);
   const urgente = faltan <= 2;
   return (
     <View style={[estilos.marcador, urgente && { backgroundColor: colores.amarilloSuave }]} accessibilityLiveRegion="polite">
@@ -116,7 +153,8 @@ export function MarcadorLlena({ faltan, tabla }: { faltan: number; tabla: string
   );
 }
 
-const estilos = StyleSheet.create({
+const crearEstilos = (colores: Colores) =>
+  StyleSheet.create({
   fila: { flexDirection: 'row', gap: 12, alignItems: 'center' },
   verso: { fontFamily: fuentes.tituloBold, fontStyle: 'italic', fontSize: 15, color: colores.tinta, backgroundColor: colores.crema, borderWidth: 1.5, borderStyle: 'dashed', borderColor: colores.gris, borderRadius: radio.m, padding: 10 },
   barra: { height: 8, borderWidth: 1.5, borderColor: colores.tinta, borderRadius: radio.total, overflow: 'hidden', backgroundColor: colores.blanco },

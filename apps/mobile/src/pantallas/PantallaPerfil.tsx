@@ -1,10 +1,11 @@
-import { useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { usePerfilJuego, useRankingSemanal, useSesion, type MovimientoPuntos, type TipoSkin } from '@loteria/core';
-import { Avance, Avatar, Cargando, Chip, MensajeError, Pestanas, Tarjeta, Vacio } from '../componentes/ui/basicos';
+import { router } from 'expo-router';
+import { usePerfilJuego, useSesion, type MovimientoPuntos, type TipoSkin } from '@loteria/core';
+import { Avance, Avatar, Cargando, Chip, Interruptor, MensajeError, Tarjeta, Vacio } from '../componentes/ui/basicos';
+import { cambiarPreferencia, usePreferencias } from '../preferencias';
 import { Boton } from '../componentes/ui/Boton';
 import { Carta } from '../componentes/juego/Carta';
-import { colores, comunes, fuentes, radio } from '../tema';
+import { fuentes, radio, type Colores, useColores, useComunes, useEstilos } from '../tema';
 
 const ETIQUETAS: Record<MovimientoPuntos['tipo'], string> = {
   participacion: 'Participación',
@@ -19,24 +20,22 @@ const ETIQUETAS: Record<MovimientoPuntos['tipo'], string> = {
   ranking: 'Ranking semanal',
 };
 const NOMBRES_TIPO: Record<TipoSkin, string> = { ficha: 'Fichas', carta: 'Cartas', avatar: 'Avatares', fondo: 'Fondos', tema: 'Temas' };
-const MEDALLAS = ['🥇', '🥈', '🥉'];
-
-type Seccion = 'perfil' | 'ranking';
 
 export function PantallaPerfil() {
+  const comunes = useComunes();
   const { salir } = useSesion();
-  const [seccion, setSeccion] = useState<Seccion>('perfil');
+  const { sonido } = usePreferencias();
   return (
     <ScrollView style={comunes.pantalla} contentContainerStyle={comunes.contenido}>
-      <Pestanas<Seccion>
-        opciones={[
-          { valor: 'perfil', etiqueta: 'Mi perfil' },
-          { valor: 'ranking', etiqueta: 'Ranking semanal' },
-        ]}
-        valor={seccion}
-        alCambiar={setSeccion}
-      />
-      {seccion === 'perfil' ? <MiPerfil /> : <Ranking />}
+      <MiPerfil />
+      <Tarjeta titulo="Ajustes">
+        <View style={{ gap: 10 }}>
+          <Interruptor etiqueta="Sonidos" activo={sonido} alCambiar={(v) => cambiarPreferencia('sonido', v)} />
+          <Boton tamano="s" variante="secundario" alPresionar={() => router.navigate({ pathname: '/tienda', params: { tipo: 'tema' } })}>
+            🎨 Cambiar tema de colores
+          </Boton>
+        </View>
+      </Tarjeta>
       <Boton variante="fantasma" alPresionar={salir}>
         Cerrar sesión
       </Boton>
@@ -45,6 +44,9 @@ export function PantallaPerfil() {
 }
 
 function MiPerfil() {
+  const colores = useColores();
+  const comunes = useComunes();
+  const estilos = useEstilos(crearEstilos);
   const { perfil: sesion } = useSesion();
   const { perfil, movimientos, cargando, error } = usePerfilJuego();
   if (!sesion) return null;
@@ -74,6 +76,9 @@ function MiPerfil() {
             <Chip tono="rosa">{`🔥 Racha ${perfil.racha} (mejor ${perfil.mejor_racha})`}</Chip>
             <Chip tono="verde">{`📅 ${perfil.dias_seguidos} día(s) seguidos`}</Chip>
           </View>
+          <Text style={[comunes.textoSuave, { textAlign: 'center' }]}>
+            {`Ficha: ${sesion.equipo.ficha?.nombre ?? 'Frijolito'} · Cartas: ${sesion.equipo.carta?.nombre ?? 'Clásica'}\nFondo: ${sesion.equipo.fondo?.nombre ?? 'Feria'} · Tema: ${sesion.equipo.tema?.nombre ?? 'Clásico'}`}
+          </Text>
         </View>
       </Tarjeta>
 
@@ -152,54 +157,8 @@ function MiPerfil() {
   );
 }
 
-function Ranking() {
-  const { perfil } = useSesion();
-  const { ranking, cargando, error, recargar } = useRankingSemanal(20);
-  if (cargando && !ranking) return <Cargando />;
-  if (error || !ranking) return <MensajeError mensaje={error ?? 'Sin ranking'} alReintentar={recargar} />;
-
-  return (
-    <>
-      <Tarjeta titulo="Premios de la semana">
-        {ranking.premios.map((p) => (
-          <View key={p.lugar} style={estilos.fila}>
-            <Text style={comunes.negrita}>{`${MEDALLAS[p.lugar - 1]} Lugar ${p.lugar}`}</Text>
-            <Text style={comunes.negrita}>{`+${p.puntos} pts${p.skin ? ' + Corona de oro' : ''}`}</Text>
-          </View>
-        ))}
-        <Text style={[comunes.textoSuave, { marginTop: 8 }]}>{`Cuentan los puntos ganados jugando. Cierra el lunes ${ranking.cierra.slice(5).split('-').reverse().join('/')}.`}</Text>
-      </Tarjeta>
-      <Tarjeta titulo="Esta semana">
-        {!ranking.filas.length ? (
-          <Vacio>Nadie ha jugado esta semana. ¡Sé el primero!</Vacio>
-        ) : (
-          ranking.filas.map((f, i) => (
-            <View key={f.usuario_id} style={[estilos.fila, f.usuario_id === perfil?.id && { backgroundColor: colores.amarilloSuave }]}>
-              <View style={[comunes.fila, { flexWrap: 'nowrap', flex: 1 }]}>
-                <Text style={[comunes.negrita, { width: 28 }]}>{MEDALLAS[i] ?? `${i + 1}.`}</Text>
-                <Avatar nombre={f.nombre} clave={f.avatar} tamano={30} />
-                <Text style={comunes.negrita} numberOfLines={1}>{f.nombre}</Text>
-              </View>
-              <Text style={comunes.negrita}>{f.puntos} pts</Text>
-            </View>
-          ))
-        )}
-      </Tarjeta>
-      {!!ranking.anterior?.ganadores.length && (
-        <Tarjeta titulo="Semana pasada">
-          {ranking.anterior.ganadores.map((g) => (
-            <View key={g.usuario_id} style={estilos.fila}>
-              <Text style={comunes.negrita}>{`${MEDALLAS[g.lugar - 1]} ${g.nombre}`}</Text>
-              <Text style={comunes.texto}>{g.puntos} pts</Text>
-            </View>
-          ))}
-        </Tarjeta>
-      )}
-    </>
-  );
-}
-
-const estilos = StyleSheet.create({
+const crearEstilos = (colores: Colores) =>
+  StyleSheet.create({
   fila: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 12, paddingVertical: 8, paddingHorizontal: 4, borderBottomWidth: 1, borderBottomColor: colores.grisClaro },
   estadisticas: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   estadistica: { width: '31%', alignItems: 'center', paddingVertical: 8, borderWidth: 1.5, borderColor: colores.grisClaro, borderRadius: radio.m, backgroundColor: colores.blanco },

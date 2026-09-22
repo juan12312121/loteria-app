@@ -5,7 +5,7 @@ import { Avatar, Chip, Tarjeta } from '../../componentes/ui/basicos';
 import { Boton } from '../../componentes/ui/Boton';
 import { TablaLoteria } from '../../componentes/juego/TablaLoteria';
 import { Confeti } from '../../componentes/ui/Confeti';
-import { colores, comunes, fuentes } from '../../tema';
+import { fuentes, type Colores, useComunes, useEstilos } from '../../tema';
 import type { ContextoSala } from './tipos';
 
 const cartasDeCasillas = (casillas: Casilla[] = []) => {
@@ -17,6 +17,8 @@ const cartasDeCasillas = (casillas: Casilla[] = []) => {
 
 /** Fin de la ronda: el tablero cantó ¡Lotería!, quién ganó, premio y puntos. */
 export function VistaResultado({ sala, ronda, porId }: ContextoSala) {
+  const comunes = useComunes();
+  const estilos = useEstilos(crearEstilos);
   const { perfil } = useSesion();
   const estado = ronda.estado;
   const ganadores: Ganador[] = ronda.resultado?.ganadores ?? estado?.ganadores ?? [];
@@ -44,6 +46,7 @@ export function VistaResultado({ sala, ronda, porId }: ContextoSala) {
           cantadas={ronda.cantadas}
           marcas={0xffff}
           destacadas={indicesDeCasillas(destacado.casillas!)}
+          encender={enVivo}
         />
       )}
 
@@ -103,7 +106,8 @@ export function VistaResultado({ sala, ronda, porId }: ContextoSala) {
   );
 }
 
-const estilos = StyleSheet.create({
+const crearEstilos = (colores: Colores) =>
+  StyleSheet.create({
   titulo: { fontFamily: fuentes.titulo, fontSize: 48, color: colores.rosa, textAlign: 'center', textShadowColor: colores.amarillo, textShadowOffset: { width: 3, height: 3 }, textShadowRadius: 0 },
   renglon: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 6, borderBottomWidth: 1, borderBottomColor: colores.grisClaro },
 });

@@ -1,6 +1,7 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { Animated, Pressable, StyleSheet, Text, View } from 'react-native';
 import { casillasDeTabla, contarMarcas, type Carta as TipoCarta } from '@loteria/core';
-import { colores, fuentes, radio } from '../../tema';
+import { fuentes, radio, type Colores, useEstilos } from '../../tema';
 import { Chip } from '../ui/basicos';
 import { Carta, Ficha } from './Carta';
 
@@ -14,10 +15,13 @@ interface Props {
   skinFicha?: string | null;
   skinCarta?: string | null;
   alTocarCasilla?: (indice: number) => void;
+  /** Festejo: las casillas destacadas se encienden una tras otra */
+  encender?: boolean;
 }
 
 /** Tabla 4×4: cartas, frijolitos del jugador y figuras logradas resaltadas. */
-export function TablaLoteria({ nombre, cartas, porId, cantadas, marcas = 0, destacadas, skinFicha, skinCarta, alTocarCasilla }: Props) {
+export function TablaLoteria({ nombre, cartas, porId, cantadas, marcas = 0, destacadas, skinFicha, skinCarta, alTocarCasilla, encender }: Props) {
+  const estilos = useEstilos(crearEstilos);
   const casillas = casillasDeTabla(cartas, cantadas, marcas, destacadas);
   const filas = [0, 1, 2, 3].map((f) => casillas.slice(f * 4, f * 4 + 4));
 
@@ -42,7 +46,13 @@ export function TablaLoteria({ nombre, cartas, porId, cantadas, marcas = 0, dest
                 accessibilityLabel={`${carta.nombre}, fila ${c.fila + 1} columna ${c.col + 1}`}
                 accessibilityState={{ selected: c.marcada, disabled: !c.cantada }}
               >
-                <Carta carta={carta} tamano="chica" skin={skinCarta} />
+                {encender && c.destacada ? (
+                  <Encendida orden={c.indice}>
+                    <Carta carta={carta} tamano="chica" skin={skinCarta} />
+                  </Encendida>
+                ) : (
+                  <Carta carta={carta} tamano="chica" skin={skinCarta} />
+                )}
                 {c.marcada && (
                   <View style={estilos.encima} pointerEvents="none">
                     <Ficha skin={skinFicha} />
@@ -57,7 +67,23 @@ export function TablaLoteria({ nombre, cartas, porId, cantadas, marcas = 0, dest
   );
 }
 
-const estilos = StyleSheet.create({
+const MS_ENTRE_CASILLAS = 90;
+
+/** Brinquito de la casilla ganadora, escalonado según su lugar en la tabla. */
+function Encendida({ orden, children }: { orden: number; children: React.ReactNode }) {
+  const [escala] = useState(() => new Animated.Value(1));
+  useEffect(() => {
+    Animated.sequence([
+      Animated.delay(orden * MS_ENTRE_CASILLAS),
+      Animated.timing(escala, { toValue: 1.12, duration: 160, useNativeDriver: true }),
+      Animated.timing(escala, { toValue: 1, duration: 200, useNativeDriver: true }),
+    ]).start();
+  }, [escala, orden]);
+  return <Animated.View style={{ transform: [{ scale: escala }] }}>{children}</Animated.View>;
+}
+
+const crearEstilos = (colores: Colores) =>
+  StyleSheet.create({
   tabla: { backgroundColor: colores.papel, borderWidth: 3, borderColor: colores.tinta, borderRadius: radio.l, padding: 8, gap: 5 },
   encabezado: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 },
   nombre: { fontFamily: fuentes.cuerpoNegra, color: colores.anil, fontSize: 15 },

@@ -4,10 +4,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSesion } from '@loteria/core';
 import { Chip, Interruptor, Pestanas, Tarjeta, Vacio } from '../../componentes/ui/basicos';
 import { cambiarPreferencia, usePreferencias } from '../../preferencias';
+import { sonidos } from '../../sonidos';
 import { Boton } from '../../componentes/ui/Boton';
 import { Cantor, MarcadorLlena, TableroCantor } from '../../componentes/juego/Cantor';
 import { TablaLoteria } from '../../componentes/juego/TablaLoteria';
-import { colores, comunes, espacio } from '../../tema';
+import { espacio, type Colores, useComunes, useEstilos } from '../../tema';
 import type { ContextoSala } from './tipos';
 
 /**
@@ -16,6 +17,8 @@ import type { ContextoSala } from './tipos';
  * llenar. Nadie grita: el tablero anuncia ¡Lotería! solo.
  */
 export function VistaRonda({ sala, ronda, porId, cartas }: ContextoSala) {
+  const comunes = useComunes();
+  const estilos = useEstilos(crearEstilos);
   const { perfil } = useSesion();
   const { autoMarcar } = usePreferencias();
   const abajo = useSafeAreaInsets().bottom;
@@ -77,7 +80,10 @@ export function VistaRonda({ sala, ronda, porId, cartas }: ContextoSala) {
               destacadas={ronda.destacadas.get(actual.id)}
               skinFicha={skinFicha}
               skinCarta={skinCarta}
-              alTocarCasilla={(i) => marcar(actual.id, i)}
+              alTocarCasilla={(i) => {
+                if (ronda.cantadas.has(actual.cartas[i])) sonidos.ficha();
+                marcar(actual.id, i);
+              }}
             />
           </>
         )}
@@ -120,7 +126,8 @@ export function VistaRonda({ sala, ronda, porId, cartas }: ContextoSala) {
   );
 }
 
-const estilos = StyleSheet.create({
+const crearEstilos = (colores: Colores) =>
+  StyleSheet.create({
   aviso: { backgroundColor: colores.amarilloSuave, borderWidth: 1.5, borderColor: colores.amarillo, borderRadius: 8, padding: 8, marginBottom: 6 },
   pie: { position: 'absolute', left: 0, right: 0, bottom: 0, paddingHorizontal: espacio.l, paddingTop: espacio.s, backgroundColor: colores.crema, borderTopWidth: 2, borderTopColor: colores.tinta, gap: 4 },
 });

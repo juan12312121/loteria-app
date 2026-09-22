@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useLocalSearchParams } from 'expo-router';
 import { SvgXml } from 'react-native-svg';
 import {
   coloresRareza, nombresRareza, svgDeAvatar, svgDeFondo, temaDe, useColeccion, useSesion, useTienda, type Skin, type TipoSkin,
@@ -7,7 +8,8 @@ import {
 import { Avance, Cargando, Chip, MensajeError, Pestanas } from '../componentes/ui/basicos';
 import { Boton } from '../componentes/ui/Boton';
 import { Carta, Ficha } from '../componentes/juego/Carta';
-import { colores, comunes, radio } from '../tema';
+import { sonidos } from '../sonidos';
+import { radio, type Colores, useComunes, useEstilos } from '../tema';
 
 const MUESTRA = { id: 1, nombre: 'El Gallo', imagen_url: null };
 const TIPOS: { valor: TipoSkin; etiqueta: string }[] = [
@@ -21,8 +23,18 @@ const MESES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'o
 const fecha = (mmdd: string) => `${Number(mmdd.slice(3))} ${MESES[Number(mmdd.slice(0, 2)) - 1]}`;
 
 export function PantallaTienda() {
+  const comunes = useComunes();
+  const estilos = useEstilos(crearEstilos);
   const { perfil } = useSesion();
-  const [tipo, setTipo] = useState<TipoSkin>('ficha');
+  const { tipo: pedido } = useLocalSearchParams<{ tipo?: string }>();
+  const tipoPedido = TIPOS.find((x) => x.valor === pedido)?.valor;
+  const [tipo, setTipo] = useState<TipoSkin>(tipoPedido ?? 'ficha');
+  // Si llega con ?tipo=tema (desde Ajustes) estando ya abierta, cambia a esa pestaña
+  const [pedidoVisto, setPedidoVisto] = useState(tipoPedido);
+  if (tipoPedido !== pedidoVisto) {
+    setPedidoVisto(tipoPedido);
+    if (tipoPedido) setTipo(tipoPedido);
+  }
   const tienda = useTienda(tipo);
   const { coleccion, recargar } = useColeccion();
   const puntos = perfil?.puntos ?? 0;
@@ -37,7 +49,6 @@ export function PantallaTienda() {
         <Chip tono="amarillo">{`⭐ ${puntos} pts`}</Chip>
       </View>
       <Text style={comunes.textoSuave}>Gana puntos jugando, con la recompensa diaria y con misiones. Las exclusivas se ganan.</Text>
-      {tipo === 'tema' && <Text style={comunes.textoSuave}>Los temas de colores se ven en la versión web; en el celular llegan pronto.</Text>}
       {total > 0 && (
         <View style={{ gap: 4 }}>
           <Text style={comunes.negrita}>{`Álbum: ${tengo} de ${total}`}</Text>
@@ -59,7 +70,10 @@ export function PantallaTienda() {
               puntos={puntos}
               ocupado={tienda.canjear.cargando || tienda.equipar.cargando}
               alCanjear={async () => {
-                if (await tienda.canjear.ejecutar(skin.id)) void recargar();
+                if (await tienda.canjear.ejecutar(skin.id)) {
+                  sonidos.cobrar();
+                  void recargar();
+                }
               }}
               alEquipar={() => tienda.equipar.ejecutar(skin.id)}
             />
@@ -71,6 +85,7 @@ export function PantallaTienda() {
 }
 
 function Muestra({ skin }: { skin: Skin }) {
+  const estilos = useEstilos(crearEstilos);
   switch (skin.tipo) {
     case 'ficha':
       return <Ficha skin={skin.clave} tamano={48} />;
@@ -111,6 +126,8 @@ interface TarjetaProps {
 }
 
 function TarjetaSkin({ skin, puntos, ocupado, alCanjear, alEquipar }: TarjetaProps) {
+  const comunes = useComunes();
+  const estilos = useEstilos(crearEstilos);
   const faltan = skin.precio_puntos - puntos;
   const bloqueada = !skin.la_tengo && skin.disponible === false;
   return (
@@ -144,7 +161,8 @@ function TarjetaSkin({ skin, puntos, ocupado, alCanjear, alEquipar }: TarjetaPro
   );
 }
 
-const estilos = StyleSheet.create({
+const crearEstilos = (colores: Colores) =>
+  StyleSheet.create({
   rejilla: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
   skin: { width: '48%', alignItems: 'center', gap: 6, padding: 12, borderWidth: 3, borderRadius: radio.l, backgroundColor: colores.blanco },
   fondo: { width: 100, height: 64, borderWidth: 2, borderColor: colores.tinta, borderRadius: radio.m, overflow: 'hidden' },
