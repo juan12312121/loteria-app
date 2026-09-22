@@ -1,0 +1,53 @@
+.fondo {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: grid;
+  place-items: center;
+  background: rgb(0 0 0 / 0.55);
+  padding: 16px;
+}
+.caja {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: min(92vw, 380px);
+  padding: 28px 24px;
+  text-align: center;
+  background: var(--papel);
+  border: 3px solid var(--tinta);
+  border-radius: 20px;
+  box-shadow: 0 8px 0 var(--sombra);
+  animation: brincar 0.45s cubic-bezier(0.2, 0.8, 0.3, 1.4);
+}
+@keyframes brincar {
+  from { transform: scale(0.7) translateY(20px); }
+}
+.emoji {
+  font-size: 4.5rem;
+  line-height: 1;
+  animation: latido 1.4s ease-in-out infinite;
+}
+@keyframes latido {
+  50% { transform: scale(1.12) rotate(-4deg); }
+}
+.titulo {
+  font-size: 2.4rem;
+  color: var(--rosa);
+  text-shadow: 3px 3px 0 var(--amarillo);
+  margin: 0;
+}
+.insignia {
+  font-family: var(--f-titulo);
+  font-size: 1.4rem;
+  font-weight: 900;
+  margin: 0;
+}
+.puntos {
+  color: var(--verde);
+  font-weight: 900;
+  margin: 0 0 10px;
+}

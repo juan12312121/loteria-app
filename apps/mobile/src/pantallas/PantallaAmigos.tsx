@@ -101,7 +101,7 @@ export function PantallaAmigos() {
 
       <Tarjeta titulo={`Mis amigos (${amigos.length})`}>
         {!amigos.length ? (
-          <Vacio>Todavía no agregas a nadie. Pásale tu código a tus compas.</Vacio>
+          <Vacio carta={27}>Todavía no agregas a nadie. Pásale tu código a tus compas.</Vacio>
         ) : (
           amigos.map((a) => <FilaAmigo key={a.id} amigo={a} alQuitar={() => quitar.ejecutar(a.id)} />)
         )}

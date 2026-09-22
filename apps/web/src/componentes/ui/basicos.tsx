@@ -1,5 +1,5 @@
 import type { InputHTMLAttributes, ReactNode, SelectHTMLAttributes } from 'react';
-import { dataUriDeAvatar, papelPicado } from '@loteria/core';
+import { dataUriDeAvatar, dataUriDeCarta, papelPicado } from '@loteria/core';
 import s from './ui.module.css';
 
 // ---------- Chip ----------
@@ -177,8 +177,17 @@ export function MensajeError({ mensaje, alReintentar }: { mensaje: string; alRei
   );
 }
 
-export function Vacio({ children }: { children: ReactNode }) {
-  return <div className={s.estado}>{children}</div>;
+/**
+ * Estado vacío con una carta de la baraja como ilustración, para que no se
+ * sienta un hueco. `carta` es el número de carta (1 = El Gallo).
+ */
+export function Vacio({ carta, children }: { carta?: number; children: ReactNode }) {
+  return (
+    <div className={s.estado}>
+      {carta && <img className={s.dibujoVacio} src={dataUriDeCarta(carta)} alt="" aria-hidden />}
+      {children}
+    </div>
+  );
 }
 
 // ---------- Pestañas ----------

@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Switch, Text, TextInput, View, type TextInputProps } from 'react-native';
 import { SvgXml } from 'react-native-svg';
-import { papelPicado, svgDeAvatar } from '@loteria/core';
+import { papelPicado, svgDeAvatar, svgDeCarta } from '@loteria/core';
 import { espacio, fuentes, radio, type Colores, useColores, useComunes, useEstilos } from '../../tema';
 import { Boton } from './Boton';
 
@@ -153,11 +153,20 @@ export function MensajeError({ mensaje, alReintentar }: { mensaje: string; alRei
   );
 }
 
-export function Vacio({ children }: { children: ReactNode }) {
+/**
+ * Estado vacío con una carta de la baraja como ilustración, para que no se
+ * sienta un hueco. `carta` es el número de carta (1 = El Gallo).
+ */
+export function Vacio({ carta, children }: { carta?: number; children: ReactNode }) {
   const comunes = useComunes();
   const estilos = useEstilos(crearEstilos);
   return (
     <View style={estilos.estado}>
+      {carta ? (
+        <View style={estilos.dibujoVacio}>
+          <SvgXml xml={svgDeCarta(carta)} width="100%" height="100%" />
+        </View>
+      ) : null}
       {typeof children === 'string' ? <Text style={[comunes.textoSuave, { textAlign: 'center' }]}>{children}</Text> : children}
     </View>
   );
@@ -199,5 +208,6 @@ const crearEstilos = (colores: Colores) =>
   pestanas: { flexDirection: 'row', borderWidth: 2, borderColor: colores.tinta, borderRadius: radio.total, padding: 3, backgroundColor: colores.papel, alignSelf: 'flex-start' },
   pestana: { paddingHorizontal: 16, paddingVertical: 6, borderRadius: radio.total },
   pestanaTexto: { fontFamily: fuentes.cuerpoNegra, color: colores.tinta },
+  dibujoVacio: { width: 84, height: 84, borderWidth: 2, borderColor: colores.tinta, borderRadius: radio.m, overflow: 'hidden', opacity: 0.85 },
   avance: { height: 10, borderWidth: 1.5, borderColor: colores.tinta, borderRadius: radio.total, backgroundColor: colores.blanco, overflow: 'hidden' },
 });

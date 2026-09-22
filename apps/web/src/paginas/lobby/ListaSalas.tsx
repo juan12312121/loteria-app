@@ -23,7 +23,7 @@ export function ListaSalas<T extends Sala & { jugadores?: number; anfitrion?: st
 }: Props<T>) {
   if (consulta.cargando && !consulta.data) return <Cargando />;
   if (consulta.error) return <MensajeError mensaje={consulta.error} alReintentar={consulta.recargar} />;
-  if (!consulta.data?.length) return <Vacio>{vacio}</Vacio>;
+  if (!consulta.data?.length) return <Vacio carta={37}>{vacio}</Vacio>;
 
   return (
     <ul className={s.lista}>

@@ -303,3 +303,17 @@
   font-size: 0.75rem;
   gap: 3px;
 }
+
+/* ---------- Dibujo de los estados vacíos ---------- */
+.dibujoVacio {
+  width: 96px;
+  height: 96px;
+  border: 2px solid var(--tinta);
+  border-radius: 10px;
+  background: var(--superficie);
+  opacity: 0.85;
+  animation: mecer 4s ease-in-out infinite;
+}
+@keyframes mecer {
+  50% { transform: rotate(-4deg); }
+}

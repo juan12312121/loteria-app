@@ -315,3 +315,19 @@
   50% { transform: scale(1.08); box-shadow: 0 0 0 5px var(--amarillo); }
   100% { transform: scale(1); box-shadow: 0 0 0 3px var(--amarillo); }
 }
+
+/* ---------- Vuelo de la carta al tablero ---------- */
+.casillaTablero {
+  display: block;
+  border-radius: 6px;
+}
+/* La clase la pone el vuelo al aterrizar (por eso es global) */
+:global(.recienCantada) {
+  animation: aterrizar 0.9s ease-out;
+  box-shadow: 0 0 0 3px var(--amarillo);
+  border-radius: 6px;
+}
+@keyframes aterrizar {
+  0% { transform: scale(1.35); }
+  60% { transform: scale(0.95); }
+}

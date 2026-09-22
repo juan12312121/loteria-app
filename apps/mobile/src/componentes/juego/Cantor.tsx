@@ -96,21 +96,50 @@ function BarraTiempo({ duracionMs, reinicio }: { duracionMs: number; reinicio: n
   );
 }
 
-/** Las 54 cartas: a color las que ya salieron. */
-export function TableroCantor({ cartas, cantadas }: { cartas: TipoCarta[]; cantadas: ReadonlySet<number> }) {
+/** Las 54 cartas: a color las que ya salieron; la última brinca al llegar. */
+export function TableroCantor({
+  cartas,
+  cantadas,
+  recien,
+}: {
+  cartas: TipoCarta[];
+  cantadas: ReadonlySet<number>;
+  /** Id de la carta recién cantada */
+  recien?: number;
+}) {
   const filas = Array.from({ length: Math.ceil(cartas.length / 9) }, (_, i) => cartas.slice(i * 9, i * 9 + 9));
   return (
     <View style={{ gap: 3 }}>
       {filas.map((fila, i) => (
         <View key={i} style={{ flexDirection: 'row', gap: 3 }}>
-          {fila.map((c) => (
-            <View key={c.id} style={{ flex: 1 }}>
-              <Carta carta={c} tamano="mini" apagada={!cantadas.has(c.id)} />
-            </View>
-          ))}
+          {fila.map((c) =>
+            c.id === recien ? (
+              <Aterriza key={c.id}>
+                <Carta carta={c} tamano="mini" apagada={false} />
+              </Aterriza>
+            ) : (
+              <View key={c.id} style={{ flex: 1 }}>
+                <Carta carta={c} tamano="mini" apagada={!cantadas.has(c.id)} />
+              </View>
+            ),
+          )}
         </View>
       ))}
     </View>
+  );
+}
+
+/** Brinquito de la carta que acaba de llegar al tablero. */
+function Aterriza({ children }: { children: React.ReactNode }) {
+  const colores = useColores();
+  const [escala] = useState(() => new Animated.Value(1.6));
+  useEffect(() => {
+    Animated.spring(escala, { toValue: 1, friction: 4, useNativeDriver: true }).start();
+  }, [escala]);
+  return (
+    <Animated.View style={{ flex: 1, transform: [{ scale: escala }], borderRadius: 4, borderWidth: 2, borderColor: colores.amarillo }}>
+      {children}
+    </Animated.View>
   );
 }
 

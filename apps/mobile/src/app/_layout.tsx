@@ -1,14 +1,18 @@
+import { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useFonts } from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
 import { PlayfairDisplay_700Bold, PlayfairDisplay_900Black } from '@expo-google-fonts/playfair-display';
 import { NunitoSans_400Regular, NunitoSans_700Bold, NunitoSans_800ExtraBold } from '@expo-google-fonts/nunito-sans';
 import { LoteriaProvider } from '@loteria/core';
 import { API_URL } from '../config';
 import { almacenMovil } from '../plataforma';
-import { Cargando } from '../componentes/ui/basicos';
 import { fuentes, ProveedorTema, useColores, useTemaOscuro } from '../tema';
+
+// La pantalla de arranque se queda mientras cargan las fuentes
+void SplashScreen.preventAutoHideAsync();
 
 export default function RaizLayout() {
   const [fuentesListas] = useFonts({
@@ -19,7 +23,11 @@ export default function RaizLayout() {
     NunitoSans_800ExtraBold,
   });
 
-  if (!fuentesListas) return <Cargando />;
+  useEffect(() => {
+    if (fuentesListas) void SplashScreen.hideAsync();
+  }, [fuentesListas]);
+
+  if (!fuentesListas) return null;
 
   return (
     <SafeAreaProvider>

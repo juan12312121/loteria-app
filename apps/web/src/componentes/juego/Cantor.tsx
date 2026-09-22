@@ -26,7 +26,7 @@ export function Cantor({ carta, ultimas, velocidadMs, ultimaCartaEn, pausada, sk
         </Chip>
       </div>
       {/* key: cada carta nueva vuelve a montar la vuelta y el verso */}
-      <div key={`carta-${carta.orden}`} className={s.volteo}>
+      <div key={`carta-${carta.orden}`} className={s.volteo} data-vuelo-origen>
         <Carta carta={carta} tamano="grande" skin={skinCarta} />
       </div>
       {carta.verso && <Verso key={`verso-${carta.orden}`} texto={carta.verso} />}
@@ -78,7 +78,9 @@ export function TableroCantor({ cartas, cantadas }: { cartas: TipoCarta[]; canta
   return (
     <div className={s.tablero}>
       {cartas.map((c) => (
-        <Carta key={c.id} carta={c} tamano="mini" apagada={!cantadas.has(c.id)} />
+        <span key={c.id} data-carta={c.id} className={s.casillaTablero}>
+          <Carta carta={c} tamano="mini" apagada={!cantadas.has(c.id)} />
+        </span>
       ))}
     </div>
   );

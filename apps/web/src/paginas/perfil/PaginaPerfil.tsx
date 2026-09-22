@@ -89,7 +89,7 @@ export function PaginaPerfil() {
       <div className={s.dosColumnas}>
         <Tarjeta titulo="Últimas partidas">
           {!perfil.historial.length ? (
-            <Vacio>Juega tu primera ronda para ver tu historial.</Vacio>
+            <Vacio carta={1}>Juega tu primera ronda para ver tu historial.</Vacio>
           ) : (
             perfil.historial.map((h) => (
               <div key={h.partida_id} className={s.movimiento}>
@@ -107,7 +107,7 @@ export function PaginaPerfil() {
 
         <Tarjeta titulo="Movimientos de puntos">
           {!movimientos.length ? (
-            <Vacio>Aquí verás lo que ganas y canjeas.</Vacio>
+            <Vacio carta={46}>Aquí verás lo que ganas y canjeas.</Vacio>
           ) : (
             movimientos.map((m) => (
               <div key={m.id} className={s.movimiento}>

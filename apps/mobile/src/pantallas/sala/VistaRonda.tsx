@@ -64,7 +64,7 @@ export function VistaRonda({ sala, ronda, porId, cartas }: ContextoSala) {
         </Tarjeta>
 
         {!actual ? (
-          <Vacio>Llegaste con la ronda empezada. Entras en la siguiente.</Vacio>
+          <Vacio carta={14}>Llegaste con la ronda empezada. Entras en la siguiente.</Vacio>
         ) : (
           <>
             <Interruptor etiqueta="Auto-marcar mis tablas" activo={autoMarcar} alCambiar={(v) => cambiarPreferencia('autoMarcar', v)} />
@@ -96,7 +96,7 @@ export function VistaRonda({ sala, ronda, porId, cartas }: ContextoSala) {
             </Boton>
           }
         >
-          {verTablero && <TableroCantor cartas={cartas} cantadas={ronda.cantadas} />}
+          {verTablero && <TableroCantor cartas={cartas} cantadas={ronda.cantadas} recien={ronda.cartaActual?.id} />}
         </Tarjeta>
 
         <Tarjeta titulo="Avisos del tablero">

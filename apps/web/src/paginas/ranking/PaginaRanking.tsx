@@ -86,7 +86,7 @@ export function PaginaRanking() {
               </div>
             ))
           ) : (
-            <Vacio>Aún no se ha cerrado ninguna semana.</Vacio>
+            <Vacio carta={23}>Aún no se ha cerrado ninguna semana.</Vacio>
           )}
         </Tarjeta>
       </div>
@@ -95,7 +95,7 @@ export function PaginaRanking() {
 }
 
 function Tabla({ filas, miId }: { filas: FilaRankingSemanal[]; miId?: string }) {
-  if (!filas.length) return <Vacio>Nadie ha jugado esta semana. ¡Sé el primero!</Vacio>;
+  if (!filas.length) return <Vacio carta={35}>Nadie ha jugado esta semana. ¡Sé el primero!</Vacio>;
   const podio = [filas[1], filas[0], filas[2]];
   return (
     <div className="pila">

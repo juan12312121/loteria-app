@@ -80,7 +80,7 @@ export function PaginaAmigos() {
 
       <Tarjeta titulo={`Mis amigos (${amigos.length})`} className={s.tarjeta}>
         {!amigos.length ? (
-          <Vacio>Todavía no agregas a nadie. Pásale tu código a tus compas.</Vacio>
+          <Vacio carta={27}>Todavía no agregas a nadie. Pásale tu código a tus compas.</Vacio>
         ) : (
           amigos.map((a) => <FilaAmigo key={a.id} amigo={a} alEntrar={(id) => navegar(`/sala/${id}`)} alQuitar={() => quitar.ejecutar(a.id)} />)
         )}

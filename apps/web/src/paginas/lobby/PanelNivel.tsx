@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import { Coins, Sparkles, TicketPercent } from 'lucide-react';
 import { useProgreso, useSesion } from '@loteria/core';
 import { Avance, Chip, Tarjeta } from '../../componentes/ui/basicos';
 import { Boton } from '../../componentes/ui/Boton';
+import { CelebracionNivel } from '../../componentes/ui/CelebracionNivel';
 import { sonidos } from '../../sonidos';
 import s from './lobby.module.css';
 
@@ -11,6 +13,7 @@ const formatoFecha = new Intl.DateTimeFormat('es-MX', { day: 'numeric', month: '
 export function PanelNivel() {
   const { perfil } = useSesion();
   const { nivel, pase, banco, cobrarNivel, cobrarPase, cobrarBanco } = useProgreso();
+  const [festejo, setFestejo] = useState<{ nivel: number; insignia: { nombre: string; emoji: string }; puntos: number } | null>(null);
   if (!nivel || !pase || !banco) return null;
 
   const cobrar = async (accion: () => Promise<unknown>) => {
@@ -21,6 +24,7 @@ export function PanelNivel() {
 
   return (
     <div className={s.progreso}>
+      {festejo && <CelebracionNivel {...festejo} alCerrar={() => setFestejo(null)} />}
       <Tarjeta titulo="Tu nivel" icono={<Sparkles size={16} />}>
         <div className="pila" style={{ gap: 10 }}>
           <div className="fila" style={{ justifyContent: 'space-between' }}>
@@ -36,7 +40,17 @@ export function PanelNivel() {
             aunque los gastes en la tienda.
           </span>
           {nivel.porCobrar > 0 ? (
-            <Boton anchoCompleto onClick={() => cobrar(() => cobrarNivel.ejecutar())} cargando={cobrarNivel.cargando}>
+            <Boton
+              anchoCompleto
+              cargando={cobrarNivel.cargando}
+              onClick={async () => {
+                const r = await cobrarNivel.ejecutar();
+                if (r) {
+                  sonidos.loteria();
+                  setFestejo(r);
+                }
+              }}
+            >
               Cobrar {nivel.porCobrar} nivel(es): +{nivel.premio} pts
             </Boton>
           ) : (

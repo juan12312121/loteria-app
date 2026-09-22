@@ -5,6 +5,7 @@ import { cambiarPreferencia, usePreferencias } from '../../preferencias';
 import { sonidos } from '../../sonidos';
 import { Boton } from '../../componentes/ui/Boton';
 import { Cantor, MarcadorLlena, TableroCantor } from '../../componentes/juego/Cantor';
+import { useVueloDeCarta } from '../../componentes/juego/vuelo';
 import { TablaLoteria } from '../../componentes/juego/TablaLoteria';
 import { ListaJugadores } from '../../componentes/juego/Sala';
 import type { ContextoSala } from './tipos';
@@ -14,6 +15,8 @@ import s from '../paginas.module.css';
 export function VistaRonda({ sala, ronda, porId, cartas }: ContextoSala) {
   const { perfil } = useSesion();
   const { autoMarcar } = usePreferencias();
+  // La carta recién cantada vuela del cantor a su casilla del tablero
+  useVueloDeCarta(ronda.cartaActual?.id, ronda.ultimaCartaEn);
   const datosSala = sala.sala!;
   const estado = ronda.estado;
   if (!estado) return null;
@@ -70,7 +73,7 @@ export function VistaRonda({ sala, ronda, porId, cartas }: ContextoSala) {
           acciones={<Interruptor etiqueta="Auto-marcar" activo={autoMarcar} alCambiar={(v) => cambiarPreferencia('autoMarcar', v)} />}
         >
           {estado.misTablas.length === 0 ? (
-            <Vacio>Llegaste con la ronda empezada. Entras en la siguiente.</Vacio>
+            <Vacio carta={14}>Llegaste con la ronda empezada. Entras en la siguiente.</Vacio>
           ) : (
             <div className={s.tablasMias}>
               {estado.misTablas.map((t) => (

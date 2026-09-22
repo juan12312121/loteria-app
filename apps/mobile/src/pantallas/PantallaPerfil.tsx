@@ -123,7 +123,7 @@ function MiPerfil() {
 
       <Tarjeta titulo="Últimas partidas">
         {!perfil.historial.length ? (
-          <Vacio>Juega tu primera ronda para ver tu historial.</Vacio>
+          <Vacio carta={1}>Juega tu primera ronda para ver tu historial.</Vacio>
         ) : (
           perfil.historial.map((h) => (
             <View key={h.partida_id} style={estilos.fila}>
@@ -139,7 +139,7 @@ function MiPerfil() {
 
       <Tarjeta titulo="Movimientos de puntos">
         {!movimientos.length ? (
-          <Vacio>Aquí verás lo que ganas y canjeas.</Vacio>
+          <Vacio carta={46}>Aquí verás lo que ganas y canjeas.</Vacio>
         ) : (
           movimientos.map((m) => (
             <View key={m.id} style={estilos.fila}>

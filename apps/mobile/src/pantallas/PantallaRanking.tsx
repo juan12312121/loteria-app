@@ -37,7 +37,7 @@ function Ranking() {
       </Tarjeta>
       <Tarjeta titulo="Esta semana">
         {!ranking.filas.length ? (
-          <Vacio>Nadie ha jugado esta semana. ¡Sé el primero!</Vacio>
+          <Vacio carta={35}>Nadie ha jugado esta semana. ¡Sé el primero!</Vacio>
         ) : (
           ranking.filas.map((f, i) => (
             <View key={f.usuario_id} style={[estilos.fila, f.usuario_id === perfil?.id && { backgroundColor: colores.amarilloSuave }]}>

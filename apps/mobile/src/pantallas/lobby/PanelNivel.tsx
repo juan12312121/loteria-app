@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useProgreso, useSesion } from '@loteria/core';
 import { Avance, Chip, Tarjeta } from '../../componentes/ui/basicos';
 import { Boton } from '../../componentes/ui/Boton';
+import { CelebracionNivel } from '../../componentes/ui/CelebracionNivel';
 import { sonidos } from '../../sonidos';
 import { fuentes, radio, useComunes, useEstilos, type Colores } from '../../tema';
 
@@ -11,6 +13,7 @@ export function PanelNivel() {
   const estilos = useEstilos(crearEstilos);
   const { perfil } = useSesion();
   const { nivel, pase, banco, cobrarNivel, cobrarPase, cobrarBanco } = useProgreso();
+  const [festejo, setFestejo] = useState<{ nivel: number; insignia: { nombre: string; emoji: string }; puntos: number } | null>(null);
   if (!nivel || !pase || !banco) return null;
 
   const cobrar = async (accion: () => Promise<unknown>) => {
@@ -22,6 +25,7 @@ export function PanelNivel() {
 
   return (
     <>
+      {festejo && <CelebracionNivel {...festejo} alCerrar={() => setFestejo(null)} />}
       <Tarjeta titulo="Tu nivel">
         <View style={{ gap: 8 }}>
           <View style={[comunes.fila, { justifyContent: 'space-between' }]}>
@@ -33,7 +37,17 @@ export function PanelNivel() {
             {`${Math.min(enNivel, paraSubir)} de ${paraSubir} puntos para el nivel ${nivel.nivel + 1}. Suman todos los puntos que ganas, aunque los gastes.`}
           </Text>
           {nivel.porCobrar > 0 ? (
-            <Boton anchoCompleto cargando={cobrarNivel.cargando} alPresionar={() => cobrar(() => cobrarNivel.ejecutar())}>
+            <Boton
+              anchoCompleto
+              cargando={cobrarNivel.cargando}
+              alPresionar={async () => {
+                const r = await cobrarNivel.ejecutar();
+                if (r) {
+                  sonidos.loteria();
+                  setFestejo(r);
+                }
+              }}
+            >
               {`Cobrar ${nivel.porCobrar} nivel(es): +${nivel.premio} pts`}
             </Boton>
           ) : (
