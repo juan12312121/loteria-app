@@ -68,7 +68,10 @@ export function PaginaLobby() {
             vacio="No hay salas públicas abiertas. ¡Crea una y desmarca «Privada»!"
             alEntrar={async (sala) => {
               if (sala.soy_miembro) return irASala(sala.id);
-              const unida = await unirse.ejecutar(sala.codigo);
+              // Si pide contraseña, se escribe aquí mismo antes de entrar
+              const password = sala.con_password ? (window.prompt(`"${sala.nombre}" pide contraseña:`) ?? '') : undefined;
+              if (sala.con_password && !password) return;
+              const unida = await unirse.ejecutar(sala.codigo, password);
               if (unida) irASala(unida.id);
             }}
           />

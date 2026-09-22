@@ -16,12 +16,13 @@ export function FormCrearSala({ accion, alCrear }: Props) {
     modo_cantor: 'automatico',
     velocidad_ms: 5000,
     privada: true,
+    password: '',
   });
   const fijar = <K extends keyof NuevaSala>(campo: K, valor: Required<NuevaSala>[K]) => setDatos((d) => ({ ...d, [campo]: valor }));
 
   const enviar = async (e: FormEvent) => {
     e.preventDefault();
-    const sala = await accion.ejecutar(datos);
+    const sala = await accion.ejecutar({ ...datos, password: datos.password.trim() || undefined });
     if (sala) alCrear(sala);
   };
 
@@ -46,6 +47,14 @@ export function FormCrearSala({ accion, alCrear }: Props) {
         <input type="checkbox" checked={datos.privada} onChange={(e) => fijar('privada', e.target.checked)} />
         Privada (solo entran con el código; si no, sale en «Salas públicas»)
       </label>
+      <Campo
+        etiqueta="Contraseña (opcional)"
+        value={datos.password}
+        onChange={(e) => fijar('password', e.target.value)}
+        placeholder="Déjala vacía si no quieres contraseña"
+        minLength={3}
+        maxLength={40}
+      />
       {accion.error && <p style={{ color: 'var(--rojo)', fontWeight: 700, margin: 0 }}>{accion.error}</p>}
       <Boton type="submit" cargando={accion.cargando}>
         Crear sala y abrir ronda

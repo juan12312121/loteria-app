@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Clock, Trophy } from 'lucide-react';
-import { dataUriDeFicha, useRankingSemanal, useSesion, type FilaRankingSemanal } from '@loteria/core';
-import { Avatar, Cargando, Chip, MensajeError, Tarjeta, Vacio } from '../../componentes/ui/basicos';
+import { dataUriDeFicha, nivelYInsignia, useRankingSemanal, useSesion, type FilaRankingSemanal } from '@loteria/core';
+import { Avatar, Cargando, Chip, Insignia, MensajeError, Tarjeta, Vacio } from '../../componentes/ui/basicos';
 import s from '../paginas.module.css';
 
 const MEDALLAS = ['🥇', '🥈', '🥉'];
@@ -106,6 +106,7 @@ function Tabla({ filas, miId }: { filas: FilaRankingSemanal[]; miId?: string }) 
               <div style={{ fontSize: '1.6rem' }}>{MEDALLAS[filas.indexOf(l)]}</div>
               <Avatar nombre={l.nombre} clave={l.avatar} tamano={48} />
               <b>{l.nombre}</b>
+              <Insignia {...nivelYInsignia(l.xp)} chico />
               <div
                 className={s.escalon}
                 style={{
@@ -129,6 +130,7 @@ function Tabla({ filas, miId }: { filas: FilaRankingSemanal[]; miId?: string }) 
             <span className="fila">
               <Avatar nombre={l.nombre} clave={l.avatar} tamano={26} />
               {l.nombre}
+              <Insignia {...nivelYInsignia(l.xp)} chico />
             </span>
             <span>{l.puntos} pts</span>
           </li>

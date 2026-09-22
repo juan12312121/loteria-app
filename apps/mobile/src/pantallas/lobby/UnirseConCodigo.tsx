@@ -7,11 +7,14 @@ import { fuentes } from '../../tema';
 
 const LARGO_CODIGO = 6;
 
-export function UnirseConCodigo({ accion, alEntrar }: { accion: Accion<[string], Sala>; alEntrar: (sala: Sala) => void }) {
+export function UnirseConCodigo({ accion, alEntrar }: { accion: Accion<[string, string?], Sala>; alEntrar: (sala: Sala) => void }) {
   const [codigo, setCodigo] = useState('');
+  const [password, setPassword] = useState('');
+  // El API contesta "pide contraseña"; hasta entonces se muestra el campo
+  const pidePassword = !!accion.error?.toLowerCase().includes('contraseña');
 
   const enviar = async () => {
-    const sala = await accion.ejecutar(codigo);
+    const sala = await accion.ejecutar(codigo, password || undefined);
     if (sala) alEntrar(sala);
   };
 
@@ -27,6 +30,16 @@ export function UnirseConCodigo({ accion, alEntrar }: { accion: Accion<[string],
         style={{ fontSize: 26, letterSpacing: 8, textAlign: 'center', fontFamily: fuentes.cuerpoNegra }}
         error={accion.error}
       />
+      {pidePassword && (
+        <Campo
+          etiqueta="Contraseña de la sala"
+          value={password}
+          onChangeText={setPassword}
+          placeholder="La que te pasaron"
+          secureTextEntry
+          autoFocus
+        />
+      )}
       <Boton variante="exito" anchoCompleto deshabilitado={codigo.length !== LARGO_CODIGO} cargando={accion.cargando} alPresionar={enviar}>
         Entrar a la sala
       </Boton>

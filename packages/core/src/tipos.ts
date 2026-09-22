@@ -81,6 +81,7 @@ export interface Sala {
 export interface SalaMia extends Sala {
   mi_rol: 'anfitrion' | 'jugador';
   jugadores: number;
+  con_password: boolean;
 }
 
 /** Sala pública del lobby (para entrar sin código). */
@@ -88,6 +89,8 @@ export interface SalaPublica extends Sala {
   anfitrion: string;
   jugadores: number;
   soy_miembro: boolean;
+  /** Pide contraseña además del código */
+  con_password: boolean;
 }
 
 /** Lo que decide el anfitrión. Costo y tablas por jugador son reglas fijas del juego. */
@@ -96,6 +99,8 @@ export interface NuevaSala {
   modo_cantor?: ModoCantor;
   velocidad_ms?: number;
   privada?: boolean;
+  /** Opcional: para entrar hay que escribirla */
+  password?: string;
 }
 
 export interface JugadorSala {
@@ -218,7 +223,9 @@ export interface Coleccion {
 
 export interface MovimientoPuntos {
   id: string;
-  tipo: 'participacion' | 'victoria' | 'logro' | 'bono' | 'penalizacion' | 'canje' | 'ajuste' | 'diario' | 'mision' | 'ranking';
+  tipo:
+    | 'participacion' | 'victoria' | 'logro' | 'bono' | 'penalizacion' | 'canje' | 'ajuste'
+    | 'diario' | 'mision' | 'ranking' | 'nivel' | 'pase';
   monto: number;
   saldo_despues: number;
   detalle: string;
@@ -255,10 +262,96 @@ export interface Mision {
   cobrada: boolean;
 }
 
+export interface Insignia {
+  desde: number;
+  clave: string;
+  nombre: string;
+  emoji: string;
+}
+
+export interface Nivel {
+  nivel: number;
+  insignia: Insignia;
+  xp: number;
+  xpNivel: number;
+  xpSiguiente: number;
+  /** Niveles subidos cuyo premio no has cobrado */
+  porCobrar: number;
+  premio: number;
+}
+
+export interface PremioPase {
+  nivel: number;
+  puntos: number;
+  fichas: number;
+  insignia?: boolean;
+  alcanzado: boolean;
+  cobrado: boolean;
+}
+
+export interface Pase {
+  /** 'YYYY-MM' */
+  temporada: string;
+  termina: string;
+  puntos: number;
+  nivel: number;
+  niveles: number;
+  por_nivel: number;
+  premios: PremioPase[];
+  por_cobrar: number;
+}
+
+export interface Banco {
+  disponible: boolean;
+  fichas: number;
+  regala: number;
+  minimo: number;
+}
+
 export interface ResumenProgreso {
   diario: Diario;
   misiones: Mision[];
+  nivel: Nivel;
+  pase: Pase;
+  banco: Banco;
   por_cobrar: number;
+}
+
+// ---------- amigos ----------
+
+export interface Amigo {
+  id: string;
+  nombre: string;
+  codigo_amigo: string;
+  avatar: string | null;
+  /** Puntos ganados en toda su vida: de ahí sale su nivel */
+  puntos_ganados: number;
+  en_linea: boolean;
+  sala_id: string | null;
+  sala_nombre: string | null;
+  sala_codigo: string | null;
+  sala_privada: boolean;
+}
+
+export interface SolicitudAmistad {
+  id: string;
+  nombre: string;
+  avatar: string | null;
+  creado_en: string;
+}
+
+export interface ResumenAmigos {
+  mi_codigo: string;
+  amigos: Amigo[];
+  pendientes: SolicitudAmistad[];
+  enviadas: SolicitudAmistad[];
+}
+
+export interface Revanchas {
+  amigo: { id: string; nombre: string };
+  juntas: number;
+  gane: number;
+  gano: number;
 }
 
 export interface FilaRankingSemanal {
@@ -266,6 +359,8 @@ export interface FilaRankingSemanal {
   nombre: string;
   avatar: string | null;
   puntos: number;
+  /** Puntos de toda su vida: para pintar su insignia */
+  xp: number;
 }
 
 export interface RankingSemanal {
@@ -308,6 +403,7 @@ export interface PerfilJuego {
   figura_favorita: { clave: string; nombre: string; veces: number } | null;
   historial: PartidaHistorial[];
   coleccion: Coleccion[];
+  nivel: Nivel;
 }
 
 export interface Meta {

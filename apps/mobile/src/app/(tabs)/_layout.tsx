@@ -72,6 +72,7 @@ function Pestanas() {
           tabBarBadgeStyle: { backgroundColor: colores.rosa, color: colores.blanco },
         }}
       />
+      <Tabs.Screen name="amigos" options={{ title: 'Amigos', tabBarIcon: icono('people') }} />
       <Tabs.Screen name="tienda" options={{ title: 'Tienda', tabBarIcon: icono('storefront') }} />
       <Tabs.Screen name="ranking" options={{ title: 'Ranking', tabBarIcon: icono('trophy') }} />
       <Tabs.Screen name="perfil" options={{ title: 'Perfil', tabBarIcon: icono('person-circle') }} />

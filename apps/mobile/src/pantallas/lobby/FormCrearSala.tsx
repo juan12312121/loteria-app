@@ -16,9 +16,16 @@ export function FormCrearSala({ accion, alCrear }: { accion: Accion<[NuevaSala],
   const [modo, setModo] = useState<ModoCantor>('automatico');
   const [velocidad, setVelocidad] = useState<Velocidad>('5000');
   const [privada, setPrivada] = useState(true);
+  const [password, setPassword] = useState('');
 
   const enviar = async () => {
-    const sala = await accion.ejecutar({ nombre: nombre.trim(), modo_cantor: modo, velocidad_ms: Number(velocidad), privada });
+    const sala = await accion.ejecutar({
+      nombre: nombre.trim(),
+      modo_cantor: modo,
+      velocidad_ms: Number(velocidad),
+      privada,
+      password: password.trim() || undefined,
+    });
     if (sala) alCrear(sala);
   };
 
@@ -41,6 +48,13 @@ export function FormCrearSala({ accion, alCrear }: { accion: Accion<[NuevaSala],
         <Text style={comunes.texto}>Privada (solo con el código)</Text>
         <Switch value={privada} onValueChange={setPrivada} trackColor={{ true: colores.rosa, false: colores.grisClaro }} />
       </View>
+      <Campo
+        etiqueta="Contraseña (opcional)"
+        value={password}
+        onChangeText={setPassword}
+        placeholder="Déjala vacía si no quieres"
+        secureTextEntry
+      />
       {accion.error && <Text style={comunes.error}>{accion.error}</Text>}
       <Boton anchoCompleto cargando={accion.cargando} deshabilitado={!nombre.trim()} alPresionar={enviar}>
         Crear sala y abrir ronda

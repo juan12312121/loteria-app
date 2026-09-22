@@ -1,0 +1,65 @@
+.tarjeta {
+  margin-bottom: 16px;
+}
+.codigo {
+  font-family: var(--f-titulo);
+  font-size: 2.4rem;
+  font-weight: 900;
+  letter-spacing: 0.35em;
+  text-align: center;
+  padding: 10px 6px 10px 18px;
+  border: 3px dashed var(--rosa);
+  border-radius: 14px;
+  background: var(--superficie);
+}
+.campoCodigo {
+  width: 100%;
+  border: 2px solid var(--tinta);
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: var(--superficie);
+  font-size: 1.6rem;
+  font-weight: 900;
+  letter-spacing: 0.35em;
+  text-align: center;
+  text-transform: uppercase;
+}
+.fila {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.nombre {
+  flex: 1;
+  min-width: 140px;
+}
+.amigo {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--gris-claro);
+}
+.amigo:last-child {
+  border-bottom: 0;
+}
+.revanchas {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 8px;
+  padding: 8px 14px;
+  border: 1.5px solid var(--amarillo);
+  border-radius: 10px;
+  background: var(--amarillo-suave);
+  text-align: center;
+}
+.error {
+  color: var(--rojo);
+  font-weight: 700;
+  margin: 0;
+}
+.aviso {
+  color: var(--verde);
+  font-weight: 700;
+  margin: 0;
+}

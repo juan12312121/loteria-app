@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { CalendarCheck, Coins, Flame, Star } from 'lucide-react';
 import { usePerfilJuego, useSesion, type MovimientoPuntos, type PerfilJuego, type TipoSkin } from '@loteria/core';
-import { Avance, Avatar, Cargando, Chip, MensajeError, Tarjeta, Vacio } from '../../componentes/ui/basicos';
+import { Avance, Avatar, Cargando, Chip, Insignia, MensajeError, Tarjeta, Vacio } from '../../componentes/ui/basicos';
 import { Carta } from '../../componentes/juego/Carta';
 import s from '../paginas.module.css';
 
@@ -16,6 +16,8 @@ const ETIQUETAS: Record<MovimientoPuntos['tipo'], string> = {
   diario: 'Recompensa diaria',
   mision: 'Misión',
   ranking: 'Ranking semanal',
+  nivel: 'Subida de nivel',
+  pase: 'Pase de temporada',
 };
 
 const NOMBRES_TIPO: Record<TipoSkin, string> = { ficha: 'Fichas', carta: 'Cartas', avatar: 'Avatares', fondo: 'Fondos', tema: 'Temas' };
@@ -36,6 +38,8 @@ export function PaginaPerfil() {
           <div className="pila" style={{ alignItems: 'center', textAlign: 'center', gap: 10 }}>
             <Avatar nombre={perfil.nombre} clave={perfil.avatar} tamano={96} />
             <h2>{perfil.nombre}</h2>
+            <Insignia insignia={perfil.nivel.insignia} nivel={perfil.nivel.nivel} />
+            <Avance valor={perfil.nivel.xp - perfil.nivel.xpNivel} total={Math.max(1, perfil.nivel.xpSiguiente - perfil.nivel.xpNivel)} tono="amarillo" />
             <div className="fila" style={{ justifyContent: 'center' }}>
               <Chip tono="amarillo" icono={<Star size={14} />}>{perfil.puntos} pts</Chip>
               <Chip icono={<Coins size={14} />}>{sesion.fichas} fichas</Chip>

@@ -85,3 +85,51 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ---------- Nivel y pase ---------- */
+.insignia {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.05rem;
+}
+.insigniaEmoji {
+  font-size: 1.6rem;
+}
+.pase {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+.premio {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 2px solid var(--gris-claro);
+  border-radius: 10px;
+  background: var(--superficie);
+  font-size: 0.85rem;
+}
+.premioListo {
+  border-color: var(--rosa);
+}
+.premioCobrado {
+  opacity: 0.6;
+}
+.premioNivel {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1.5px solid var(--tinta);
+  background: var(--amarillo-suave);
+  font-weight: 900;
+  flex-shrink: 0;
+}
+.premioQue {
+  flex: 1;
+  font-weight: 700;
+}

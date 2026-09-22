@@ -18,6 +18,8 @@ const ETIQUETAS: Record<MovimientoPuntos['tipo'], string> = {
   diario: 'Recompensa diaria',
   mision: 'Misión',
   ranking: 'Ranking semanal',
+  nivel: 'Subida de nivel',
+  pase: 'Pase de temporada',
 };
 const NOMBRES_TIPO: Record<TipoSkin, string> = { ficha: 'Fichas', carta: 'Cartas', avatar: 'Avatares', fondo: 'Fondos', tema: 'Temas' };
 

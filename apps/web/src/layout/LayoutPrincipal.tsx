@@ -9,6 +9,7 @@ import s from './layout.module.css';
 const enlaces = [
   { a: '/jugar', texto: 'Jugar' },
   { a: '/misiones', texto: 'Misiones' },
+  { a: '/amigos', texto: 'Amigos' },
   { a: '/tienda', texto: 'Tienda' },
   { a: '/ranking', texto: 'Ranking' },
   { a: '/perfil', texto: 'Perfil' },

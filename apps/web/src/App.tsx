@@ -12,6 +12,7 @@ import { PaginaTienda } from './paginas/tienda/PaginaTienda';
 import { PaginaPerfil } from './paginas/perfil/PaginaPerfil';
 import { PaginaRanking } from './paginas/ranking/PaginaRanking';
 import { PaginaMisiones } from './paginas/misiones/PaginaMisiones';
+import { PaginaAmigos } from './paginas/amigos/PaginaAmigos';
 
 export function App() {
   return (
@@ -25,6 +26,7 @@ export function App() {
               <Route path="jugar" element={<PaginaLobby />} />
               <Route path="sala/:salaId" element={<PaginaSala />} />
               <Route path="misiones" element={<PaginaMisiones />} />
+              <Route path="amigos" element={<PaginaAmigos />} />
               <Route path="tienda" element={<PaginaTienda />} />
               <Route path="ranking" element={<PaginaRanking />} />
               <Route path="perfil" element={<PaginaPerfil />} />

@@ -21,11 +21,35 @@ export function useProgreso() {
     return r;
   });
 
+  const cobrarNivel = useAccion(async () => {
+    const r = await api.progreso.cobrarNivel();
+    await actualizar();
+    return r;
+  });
+
+  const cobrarPase = useAccion(async (nivel: number) => {
+    const r = await api.progreso.cobrarPase(nivel);
+    await actualizar();
+    return r;
+  });
+
+  const cobrarBanco = useAccion(async () => {
+    const r = await api.progreso.cobrarBanco();
+    await actualizar();
+    return r;
+  });
+
   return {
     diario: resumen.data?.diario ?? null,
+    nivel: resumen.data?.nivel ?? null,
+    pase: resumen.data?.pase ?? null,
+    banco: resumen.data?.banco ?? null,
+    cobrarNivel,
+    cobrarPase,
+    cobrarBanco,
     misiones: resumen.data?.misiones ?? [],
-    /** Cosas por cobrar (misiones listas + la recompensa de hoy) */
-    porCobrar: (resumen.data?.por_cobrar ?? 0) + (resumen.data?.diario.disponible ? 1 : 0),
+    /** Cosas por cobrar: misiones listas, niveles, pase y la recompensa de hoy */
+    porCobrar: (resumen.data?.por_cobrar ?? 0) + (resumen.data?.diario.disponible ? 1 : 0) + (resumen.data?.banco.disponible ? 1 : 0),
     cargando: resumen.cargando,
     error: resumen.error,
     recargar: resumen.recargar,

@@ -36,6 +36,7 @@ export function PantallaLobby() {
             if (unida) irASala(unida);
           }}
         />
+        {unirse.error && <Text style={comunes.error}>{unirse.error}</Text>}
       </Tarjeta>
     </ScrollView>
   );

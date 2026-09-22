@@ -15,7 +15,7 @@ export function useLobby() {
     return sala;
   });
 
-  const unirse = useAccion((codigo: string) => api.salas.unirse(codigo));
+  const unirse = useAccion((codigo: string, password?: string) => api.salas.unirse(codigo, password));
 
   return { mias, publicas, crear, unirse };
 }

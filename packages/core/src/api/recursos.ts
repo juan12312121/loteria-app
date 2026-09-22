@@ -1,8 +1,8 @@
 import type { HttpClient } from './http';
 import type {
   Carta, CartaCantada, Coleccion, EstadoRonda, Equipo, Figura, JugadorSala, LugarRanking, MiTabla,
-  MovimientoPuntos, NuevaSala, Partida, Perfil, PerfilJuego, RankingSemanal, ResumenProgreso, Sala, SalaMia,
-  SalaPublica, Sesion, Skin, Tabla, TipoSkin,
+  MovimientoPuntos, NuevaSala, Partida, Perfil, PerfilJuego, RankingSemanal, ResumenAmigos, ResumenProgreso,
+  Revanchas, Sala, SalaMia, SalaPublica, Sesion, Skin, Tabla, TipoSkin,
 } from '../tipos';
 
 /**
@@ -22,7 +22,8 @@ export function crearApi(http: HttpClient) {
       publicas: () => http.get<SalaPublica[]>('/salas/publicas'),
       obtener: (id: string) => http.get<Sala>(`/salas/${id}`),
       crear: (datos: NuevaSala) => http.post<Sala>('/salas', datos),
-      unirse: (codigo: string) => http.post<Sala>(`/salas/unirse/${codigo.trim().toUpperCase()}`),
+      unirse: (codigo: string, password?: string) =>
+        http.post<Sala>(`/salas/unirse/${codigo.trim().toUpperCase()}`, password ? { password } : undefined),
       salir: (id: string) => http.post<void>(`/salas/${id}/salir`),
       jugadores: (id: string) => http.get<JugadorSala[]>(`/salas/${id}/jugadores`),
       agregarBot: (id: string) => http.post<{ id: string; nombre: string }>(`/salas/${id}/bots`),
@@ -72,6 +73,25 @@ export function crearApi(http: HttpClient) {
       cobrarMision: (clave: string) => http.post<{ puntos: number; saldo: number; skin: Skin | null }>(`/progreso/misiones/${clave}/cobrar`),
       ranking: (limite = 20) => http.get<RankingSemanal>('/progreso/ranking', { limite }),
       perfil: (usuarioId?: string) => http.get<PerfilJuego>(usuarioId ? `/progreso/perfil/${usuarioId}` : '/progreso/perfil'),
+      cobrarNivel: () => http.post<{ nivel: number; insignia: { nombre: string; emoji: string }; puntos: number }>('/progreso/nivel'),
+      cobrarPase: (nivel: number) => http.post<{ nivel: number; puntos: number; fichas: number }>(`/progreso/pase/${nivel}`),
+      cobrarBanco: () => http.post<{ fichas: number; regalo: number }>('/progreso/banco'),
+    },
+
+    amigos: {
+      resumen: () => http.get<ResumenAmigos>('/amigos'),
+      solicitar: (codigo: string) => http.post<{ estado: 'pendiente' | 'aceptada'; amigo: { id: string; nombre: string } }>(
+        '/amigos/solicitudes',
+        { codigo: codigo.trim().toUpperCase() },
+      ),
+      aceptar: (id: string) => http.post<ResumenAmigos>(`/amigos/solicitudes/${id}/aceptar`),
+      quitar: (id: string) => http.delete(`/amigos/${id}`),
+      revanchas: (id: string) => http.get<Revanchas>(`/amigos/${id}/historial`),
+    },
+
+    avisos: {
+      registrar: (token: string) => http.post<void>('/avisos/dispositivos', { token }),
+      quitar: (token: string) => http.delete(`/avisos/dispositivos/${encodeURIComponent(token)}`),
     },
   };
 }

@@ -110,6 +110,25 @@ export function Avatar({ nombre, clave, tamano = 36, conectado }: AvatarProps) {
   );
 }
 
+// ---------- Insignia ----------
+interface InsigniaProps {
+  insignia: { nombre: string; emoji: string };
+  nivel: number;
+  /** Versión chica, para ir junto a un nombre en una lista */
+  chico?: boolean;
+}
+
+/** Insignia y nivel del jugador (sale de los puntos que ha ganado en su vida). */
+export function Insignia({ insignia, nivel, chico }: InsigniaProps) {
+  return (
+    <span className={`${s.insignia} ${chico ? s.insigniaChica : ''}`} title={`${insignia.nombre} · nivel ${nivel}`}>
+      <span aria-hidden>{insignia.emoji}</span>
+      {!chico && insignia.nombre}
+      <b>{nivel}</b>
+    </span>
+  );
+}
+
 // ---------- Interruptor ----------
 export function Interruptor({ etiqueta, activo, alCambiar }: { etiqueta: ReactNode; activo: boolean; alCambiar: (v: boolean) => void }) {
   return (
